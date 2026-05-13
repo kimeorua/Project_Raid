@@ -1,0 +1,16 @@
+# 이 아래의 폴더들은 업로드하지 않습니다.
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+.idea/
+
+# 모든 Content 폴더를 무시합니다.
+Content/
+
+# 프로젝트 파일 및 유저 설정
+*.sln
+*.suo
+*.pdb
