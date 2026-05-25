@@ -5,6 +5,14 @@
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
 #include "Kismet/GameplayStatics.h"
+#include "Subsystem/PR_LocalPlayerSubsystem_Option.h"
+
+void UPR_OptionMenu::SoundMixOverride()
+{
+	if (!LocalPlayerSubsystem_Option) { return;}
+	
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), LocalPlayerSubsystem_Option->GetGameSoundMix(), SoundClass, Volume, 1.0f, 0.0f, true);
+}
 
 void UPR_OptionMenu::VolumeUp()
 {
@@ -14,7 +22,7 @@ void UPR_OptionMenu::VolumeUp()
 	
 	VolumeTextSetting();
 	
-	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), SoundMixClass, SoundClass, Volume);
+	SoundMixOverride();
 }
 
 void UPR_OptionMenu::VolumeDawn()
@@ -25,7 +33,7 @@ void UPR_OptionMenu::VolumeDawn()
 	
 	VolumeTextSetting();
 	
-	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), SoundMixClass, SoundClass, Volume);
+	SoundMixOverride();
 }
 
 void UPR_OptionMenu::OptionWidgetClose()
@@ -46,10 +54,8 @@ void UPR_OptionMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	if (SoundMixClass)
-	{
-		UGameplayStatics::PushSoundMixModifier(GetWorld(), SoundMixClass);
-	}
+	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+	LocalPlayerSubsystem_Option = LocalPlayer->GetSubsystem<UPR_LocalPlayerSubsystem_Option>();
 	
 	UICloseButton->OnClicked().AddUObject(this, &ThisClass::OptionWidgetClose);
 	

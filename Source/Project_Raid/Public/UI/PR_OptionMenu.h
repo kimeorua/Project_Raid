@@ -10,6 +10,7 @@ class UCommonButtonBase;
 class UCommonTextBlock;
 class USoundClass;
 class USoundMix;
+class UPR_LocalPlayerSubsystem_Option;
 
 UCLASS()
 class PROJECT_RAID_API UPR_OptionMenu : public UCommonActivatableWidget
@@ -27,22 +28,22 @@ private:
 	TObjectPtr<UCommonTextBlock> VolumeText;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<USoundMix> SoundMixClass;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<USoundClass> SoundClass;
+	
+	float Volume = 1.0f;
 	
 	void VolumeUp();
 	void VolumeDawn();
+	void SoundMixOverride();
+	void VolumeTextSetting();
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonButtonBase> UICloseButton;
 	
 	void OptionWidgetClose();
 	
-	float Volume = 1.0f;
-	
-	void VolumeTextSetting();
+	UPROPERTY()
+	TObjectPtr<UPR_LocalPlayerSubsystem_Option> LocalPlayerSubsystem_Option;
 	
 protected:
 	virtual void NativeConstruct() override;
