@@ -17,6 +17,10 @@ class PROJECT_RAID_API UPR_OptionMenu : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 	
+protected:
+	virtual void NativeConstruct() override;
+	virtual UWidget* NativeGetDesiredFocusTarget() const override; 
+	
 private:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonButtonBase> VolumeUpButton;
@@ -38,14 +42,26 @@ private:
 	void VolumeTextSetting();
 	
 	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonButtonBase> GraphicUpButton;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonButtonBase> GraphicDawnButton;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonTextBlock> GraphicText;
+	
+	int GraphicLevel = 3;
+	
+	void GraphicUp();
+	void GraphicDawn();
+	void GraphicTextSetting();
+	void GraphicOverride();
+	
+	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonButtonBase> UICloseButton;
 	
 	void OptionWidgetClose();
 	
 	UPROPERTY()
 	TObjectPtr<UPR_LocalPlayerSubsystem_Option> LocalPlayerSubsystem_Option;
-	
-protected:
-	virtual void NativeConstruct() override;
-	virtual UWidget* NativeGetDesiredFocusTarget() const override; 
 };
