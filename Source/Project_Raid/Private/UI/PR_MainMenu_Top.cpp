@@ -5,6 +5,7 @@
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
 #include "UI/PR_MainMenu_Sub.h"
+#include "Subsystem/PR_LocalPlayerSubsystem_Option.h"
 
 void UPR_MainMenu_Top::HandleOptionUIPopupRequest(TSubclassOf<UCommonActivatableWidget> OptionPopUpClass)
 {
@@ -21,4 +22,8 @@ void UPR_MainMenu_Top::NativeConstruct()
 	{
 		MainUI->OnRequestOptionPopUp.BindUObject(this, &ThisClass::HandleOptionUIPopupRequest);
 	}
+	
+	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+	UPR_LocalPlayerSubsystem_Option* LocalPlayerSubsystem_Option = LocalPlayer->GetSubsystem<UPR_LocalPlayerSubsystem_Option>();
+	LocalPlayerSubsystem_Option->RefreshVolume();
 }

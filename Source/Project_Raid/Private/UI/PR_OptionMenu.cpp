@@ -6,7 +6,9 @@
 #include "CommonTextBlock.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
+
 #include "Subsystem/PR_LocalPlayerSubsystem_Option.h"
+#include "SaveGame/PR_OptionSaveGame.h"
 
 void UPR_OptionMenu::NativeConstruct()
 {
@@ -23,7 +25,7 @@ void UPR_OptionMenu::NativeConstruct()
 	GraphicUpButton->OnClicked().AddUObject(this, &ThisClass::GraphicUp);
 	GraphicDawnButton->OnClicked().AddUObject(this, &ThisClass::GraphicDawn);
 	
-	VolumeTextSetting();
+	VolumeTextSetting(LocalPlayerSubsystem_Option->GetCurrentVolume());
 	
 	if (UGameUserSettings* GSettings = UGameUserSettings::GetGameUserSettings())
 	{
@@ -31,46 +33,39 @@ void UPR_OptionMenu::NativeConstruct()
 	}
 	GraphicTextSetting();
 }
+
 UWidget* UPR_OptionMenu::NativeGetDesiredFocusTarget() const
 {
 	return  IsValid(VolumeUpButton) ? VolumeUpButton : Super::NativeGetDesiredFocusTarget();
 }
 
-void UPR_OptionMenu::SoundMixOverride()
+void UPR_OptionMenu::VolumeTextSetting(float NewVolume)
 {
-	if (!LocalPlayerSubsystem_Option) { return;}
-	
-	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), LocalPlayerSubsystem_Option->GetGameSoundMix(), SoundClass, Volume, 1.0f, 0.0f, true);
-}
-
-void UPR_OptionMenu::VolumeTextSetting()
-{
-	int32 TargetVolumeInt = FMath::RoundToInt(Volume * 100.0f);
-	
+	int32 TargetVolumeInt = FMath::RoundToInt(NewVolume * 100.0f);
 	FString VolumeStr = FString::Printf(TEXT("Sound : %d %%"), TargetVolumeInt);
-	
 	VolumeText->SetText(FText::FromString(VolumeStr));
 }
 
 void UPR_OptionMenu::VolumeUp()
 {
-	Volume += 0.1f;
+	if (!LocalPlayerSubsystem_Option) { return; }
 	
-	Volume = FMath::Clamp(Volume, 0.0f, 1.0f);
+	float NewVolume = LocalPlayerSubsystem_Option->GetCurrentVolume() + 0.1f;
+	NewVolume = FMath::Clamp(NewVolume, 0.0f, 1.0f);
 	
-	VolumeTextSetting();
-	
-	SoundMixOverride();
+	LocalPlayerSubsystem_Option->UpdateVolume(NewVolume);
+	VolumeTextSetting(LocalPlayerSubsystem_Option->GetCurrentVolume());
 }
 
 void UPR_OptionMenu::VolumeDawn()
 {
-	Volume -= 0.1f;
+	if (!LocalPlayerSubsystem_Option) { return; }
 	
-	Volume = FMath::Clamp(Volume, 0.0f, 1.0f);
+	float NewVolume = LocalPlayerSubsystem_Option->GetCurrentVolume() - 0.1f;
+	NewVolume = FMath::Clamp(NewVolume, 0.0f, 1.0f);
 	
-	VolumeTextSetting();
-	SoundMixOverride();
+	LocalPlayerSubsystem_Option->UpdateVolume(NewVolume);
+	VolumeTextSetting(LocalPlayerSubsystem_Option->GetCurrentVolume());
 }
 
 void UPR_OptionMenu::GraphicUp()
@@ -132,5 +127,13 @@ void UPR_OptionMenu::GraphicOverride()
 
 void UPR_OptionMenu::OptionWidgetClose()
 {
+	if (UPR_OptionSaveGame* SaveGameInstance = Cast<UPR_OptionSaveGame>(UGameplayStatics::CreateSaveGameObject(UPR_OptionSaveGame::StaticClass())))
+	{
+		if (!LocalPlayerSubsystem_Option) { return; }
+		
+		SaveGameInstance->SavedVolume = LocalPlayerSubsystem_Option->GetCurrentVolume();
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("SoundSlot"), 0);
+	}
+	
 	DeactivateWidget();
 }

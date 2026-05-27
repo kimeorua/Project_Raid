@@ -31,15 +31,9 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonTextBlock> VolumeText;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<USoundClass> SoundClass;
-	
-	float Volume = 1.0f;
-	
 	void VolumeUp();
 	void VolumeDawn();
-	void SoundMixOverride();
-	void VolumeTextSetting();
+	void VolumeTextSetting(float NewVolume);
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonButtonBase> GraphicUpButton;
