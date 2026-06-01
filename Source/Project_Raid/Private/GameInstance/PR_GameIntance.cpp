@@ -10,26 +10,40 @@
 
 void UPR_GameIntance::Login()
 {
-	IOnlineIdentityPtr IdentityPtr = GetIdentityPtr();
-	if (IdentityPtr.IsValid())
+	FOnlineAccountCredentials OnlineAccountCredentials;
+#if WITH_EDITOR
+	if (GetWorld() && GetWorld()->IsPlayInEditor())
 	{
-		if (IdentityPtr->GetLoginStatus(0) == ELoginStatus::LoggedIn)
-		{
-			LogHelper::LogPrint(TEXT("Already Logged In!"), ELogVerbosity::Warning);
-			return;
-		}
-		
-		FOnlineAccountCredentials OnlineAccountCredentials;
-		OnlineAccountCredentials.Type = TEXT("accountportal");
-		OnlineAccountCredentials.Id = TEXT("");
-		OnlineAccountCredentials.Token = TEXT("");
-		
-		IdentityPtr->Login(0, OnlineAccountCredentials);
+		UE_LOG(LogTemp, Warning, TEXT("[PIE] 에디터 플레이 구동: 기본 HostUser로 로그인"));
+       
+		OnlineAccountCredentials.Type = TEXT("developer");
+		OnlineAccountCredentials.Id = TEXT("127.0.0.1:8081");
+		OnlineAccountCredentials.Token = TEXT("HostUser");
 	}
+	// 2. bat 파일 실행
 	else
 	{
-		LogHelper::LogPrint(TEXT("Failed to get Identity Interface!"), ELogVerbosity::Error);
+		OnlineAccountCredentials.Type = TEXT("developer");
+		OnlineAccountCredentials.Id = TEXT("127.0.0.1:8081");
+		
+		FString ParsedToken;
+		if (FParse::Value(FCommandLine::Get(), TEXT("AUTH_CREDENTIALS="), ParsedToken))
+		{
+			OnlineAccountCredentials.Token = ParsedToken; 
+			UE_LOG(LogTemp, Log, TEXT("[BAT RUN] Command line token found: %s"), *ParsedToken);
+		}
+		else
+		{
+			OnlineAccountCredentials.Token = TEXT("HostUser");
+		}
 	}
+#else
+	OnlineAccountCredentials.Type = TEXT("persistentauth");
+	OnlineAccountCredentials.Id = TEXT("");
+	OnlineAccountCredentials.Token = TEXT("");
+#endif
+
+	IdentityPtr->Login(0, OnlineAccountCredentials);
 }
 
 void UPR_GameIntance::Init()
@@ -37,19 +51,32 @@ void UPR_GameIntance::Init()
 	Super::Init();
 	
 	OnlineSubsystem = IOnlineSubsystem::Get();
-    
-	IOnlineIdentityPtr IdentityPtr = GetIdentityPtr();
-	if (IdentityPtr.IsValid())
+	if (OnlineSubsystem)
 	{
-		IdentityPtr->OnLoginCompleteDelegates->AddUObject(this, &UPR_GameIntance::LoginComleted);
+		IdentityPtr = OnlineSubsystem->GetIdentityInterface();
+		
+		if (IdentityPtr.IsValid())
+		{
+			LoginDelegateHandle = IdentityPtr->OnLoginCompleteDelegates->AddUObject(this, &UPR_GameIntance::LoginComleted);
+		}
 	}
+}
+
+void UPR_GameIntance::Shutdown()
+{
+	if (IdentityPtr.IsValid() && LoginDelegateHandle.IsValid())
+	{
+		IdentityPtr->OnLoginCompleteDelegates->Remove(LoginDelegateHandle);
+	}
+
+	Super::Shutdown();
 }
 
 void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error)
 {
 	if (bSuccessful)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Login"));
+		MoveToLobby();
 	}
 	else
 	{
@@ -57,11 +84,7 @@ void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUn
 	}
 }
 
-IOnlineIdentityPtr UPR_GameIntance::GetIdentityPtr() const
+void UPR_GameIntance::MoveToLobby() const
 {
-	if (OnlineSubsystem)
-	{
-		return  OnlineSubsystem->GetIdentityInterface();
-	}
-	return  nullptr;
+	LogHelper::LogPrint(TEXT("MoveToLobby?"));
 }

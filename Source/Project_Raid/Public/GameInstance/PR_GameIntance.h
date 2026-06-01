@@ -20,11 +20,17 @@ public:
 	
 protected:
 	virtual  void Init() override;
+	virtual void Shutdown() override;
 	
 private:
 	IOnlineSubsystem* OnlineSubsystem;
+	IOnlineIdentityPtr IdentityPtr;
 	
+	FDelegateHandle LoginDelegateHandle;
 	void LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error);
 	
-	IOnlineIdentityPtr GetIdentityPtr() const;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings|Levels", meta = (AllowPrivateAccess = "true"))
+	TSoftObjectPtr<UWorld> LobbyLevel;
+	
+	void MoveToLobby() const;
 };
