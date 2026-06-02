@@ -6,7 +6,7 @@
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "OnlineSubsystem.h"
 
-#include "Utils/LogHelper.h"
+#include "Kismet/GameplayStatics.h"
 
 void UPR_GameIntance::Login()
 {
@@ -86,5 +86,13 @@ void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUn
 
 void UPR_GameIntance::MoveToLobby() const
 {
-	LogHelper::LogPrint(TEXT("MoveToLobby?"));
+	if (!LobbyLevelRef.IsValid())
+	{
+		LobbyLevelRef.LoadSynchronous();
+	}
+	if (LobbyLevelRef.IsValid() && GetWorld())
+	{
+		const FName LevelName = FName(*FPackageName::ObjectPathToPackageName(LobbyLevelRef.ToString()));
+		UGameplayStatics::OpenLevel(GetWorld(), LevelName);
+	}
 }

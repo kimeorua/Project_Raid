@@ -30,7 +30,7 @@ private:
 	void LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error);
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings|Levels", meta = (AllowPrivateAccess = "true"))
-	TSoftObjectPtr<UWorld> LobbyLevel;
+	TSoftObjectPtr<UWorld> LobbyLevelRef;
 	
 	void MoveToLobby() const;
 };

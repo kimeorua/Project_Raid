@@ -26,7 +26,10 @@ public class Project_Raid : ModuleRules
 			
 			"GameplayAbilities",
 			"GameplayTags",
-			"GameplayTasks"
+			"GameplayTasks",
+			
+			"AudioMixer",         
+			"SignalProcessing"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
