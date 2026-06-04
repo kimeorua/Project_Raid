@@ -6,6 +6,7 @@
 
 #include "GameInstance/PR_GameIntance.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Interface/PR_OptionUIInterface.h"
 
 void UPR_LobbyMenu_Sub::CreateSessionButtonClicked() const
 {
@@ -23,7 +24,12 @@ void UPR_LobbyMenu_Sub::ExitButtonClicked() const
 
 void UPR_LobbyMenu_Sub::OptionButtonClicked() const
 {
+	if (!GameOptionWidgetClass) { return; }
 	
+	if (IPR_OptionUIInterface* OptionInterface = Cast<IPR_OptionUIInterface>(GetOwningPlayer()))
+	{
+		OptionInterface->RequestOptionPopup(GameOptionWidgetClass);
+	}
 }
 
 void UPR_LobbyMenu_Sub::NativeConstruct()

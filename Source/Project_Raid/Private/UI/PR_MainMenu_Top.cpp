@@ -6,22 +6,27 @@
 
 #include "UI/PR_MainMenu_Sub.h"
 #include "Subsystem/PR_LocalPlayerSubsystem_Option.h"
+#include "UI/PR_LobbyMenu_Sub.h"
 
-void UPR_MainMenu_Top::HandleOptionUIPopupRequest(TSubclassOf<UCommonActivatableWidget> OptionPopUpClass)
+void UPR_MainMenu_Top::PopUpLobbyUI() const
 {
-	if (!OptionStack || !OptionPopUpClass) { return;}
+	if (!MenuStack || !GameLobbyWidgetClass) { return;}
+	MenuStack->ClearWidgets();
+	MenuStack->AddWidget<UPR_LobbyMenu_Sub>(GameLobbyWidgetClass);
+}
+
+void UPR_MainMenu_Top::PushOptionWidget(TSubclassOf<UCommonActivatableWidget> OptionUIClass)
+{
+	if (!OptionStack || !OptionUIClass) { return;}
 	
-	OptionStack->AddWidget(OptionPopUpClass);
+	OptionStack->AddWidget(OptionUIClass);
 }
 
 void UPR_MainMenu_Top::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	if (UPR_MainMenu_Sub* MainUI = MenuStack->AddWidget<UPR_MainMenu_Sub>(GameLobbyWidgetClass))
-	{
-		MainUI->OnRequestOptionPopUp.BindUObject(this, &ThisClass::HandleOptionUIPopupRequest);
-	}
+	MenuStack->AddWidget<UPR_MainMenu_Sub>(GameMainMenuWidgetClass);
 	
 	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
 	UPR_LocalPlayerSubsystem_Option* LocalPlayerSubsystem_Option = LocalPlayer->GetSubsystem<UPR_LocalPlayerSubsystem_Option>();

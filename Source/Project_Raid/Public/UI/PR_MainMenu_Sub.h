@@ -6,7 +6,6 @@
 #include "CommonActivatableWidget.h"
 #include "PR_MainMenu_Sub.generated.h"
 
-DECLARE_DELEGATE_OneParam(FOnRequestOptionPopUp, TSubclassOf<UCommonActivatableWidget>);
 
 class UCommonButtonBase;
 class UPR_GameIntance;
@@ -43,7 +42,4 @@ private:
 protected:
 	virtual void NativeConstruct() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
-	
-public:
-	FOnRequestOptionPopUp OnRequestOptionPopUp;
 };

@@ -15,10 +15,9 @@ class PROJECT_RAID_API UPR_GameIntance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
     void Login();
 	
-protected:
 	virtual  void Init() override;
 	virtual void Shutdown() override;
 	
@@ -28,9 +27,4 @@ private:
 	
 	FDelegateHandle LoginDelegateHandle;
 	void LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error);
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Settings|Levels", meta = (AllowPrivateAccess = "true"))
-	TSoftObjectPtr<UWorld> LobbyLevelRef;
-	
-	void MoveToLobby() const;
 };

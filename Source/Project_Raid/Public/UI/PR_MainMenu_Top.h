@@ -8,12 +8,16 @@
 
 class UCommonActivatableWidgetStack;
 class UPR_MainMenu_Sub;
+class UPR_LobbyMenu_Sub;
 class UCommonActivatableWidget;
 
 UCLASS()
 class PROJECT_RAID_API UPR_MainMenu_Top : public UCommonUserWidget
 {
 	GENERATED_BODY()
+public:
+	void PopUpLobbyUI() const;
+	void PushOptionWidget(TSubclassOf<UCommonActivatableWidget> OptionUIClass);
 	
 private:
 	UPROPERTY(meta=(BindWidget))
@@ -23,9 +27,10 @@ private:
 	TObjectPtr<UCommonActivatableWidgetStack> OptionStack;
 	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
-	TSubclassOf<UPR_MainMenu_Sub> GameLobbyWidgetClass;
+	TSubclassOf<UPR_MainMenu_Sub> GameMainMenuWidgetClass;
 	
-	void HandleOptionUIPopupRequest(TSubclassOf<UCommonActivatableWidget> OptionPopUpClass);
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	TSubclassOf<UPR_LobbyMenu_Sub> GameLobbyWidgetClass;
 	
 protected:
 	virtual void NativeConstruct() override;

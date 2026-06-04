@@ -6,12 +6,12 @@
 
 #include "GameInstance/PR_GameIntance.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Interface/PR_OptionUIInterface.h"
 
 
 void UPR_MainMenu_Sub::LoginButtonClicked() const
 {
 	if (!GameInstance) { return;}
-	
 	GameInstance->Login();
 }
 
@@ -24,7 +24,11 @@ void UPR_MainMenu_Sub::ExitButtonClicked() const
 void UPR_MainMenu_Sub::OptionButtonClicked() const
 {
 	if (!GameOptionWidgetClass) { return; }
-	OnRequestOptionPopUp.ExecuteIfBound(GameOptionWidgetClass);
+	
+	if (IPR_OptionUIInterface* OptionInterface = Cast<IPR_OptionUIInterface>(GetOwningPlayer()))
+	{
+		OptionInterface->RequestOptionPopup(GameOptionWidgetClass);
+	}
 }
 
 void UPR_MainMenu_Sub::NativeConstruct()

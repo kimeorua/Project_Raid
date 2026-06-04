@@ -5,8 +5,9 @@
 
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "OnlineSubsystem.h"
-
 #include "Kismet/GameplayStatics.h"
+
+#include "PlayerController/PR_MainMenuController.h"
 
 void UPR_GameIntance::Login()
 {
@@ -76,23 +77,13 @@ void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUn
 {
 	if (bSuccessful)
 	{
-		MoveToLobby();
+		if (APR_MainMenuController* PR_PC = Cast<APR_MainMenuController>(UGameplayStatics::GetPlayerController(GetWorld(), NumOfPlayer)))
+		{
+			PR_PC->ShowLobbyUI();
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Login failed %s"), *Error);
-	}
-}
-
-void UPR_GameIntance::MoveToLobby() const
-{
-	if (!LobbyLevelRef.IsValid())
-	{
-		LobbyLevelRef.LoadSynchronous();
-	}
-	if (LobbyLevelRef.IsValid() && GetWorld())
-	{
-		const FName LevelName = FName(*FPackageName::ObjectPathToPackageName(LobbyLevelRef.ToString()));
-		UGameplayStatics::OpenLevel(GetWorld(), LevelName);
 	}
 }
