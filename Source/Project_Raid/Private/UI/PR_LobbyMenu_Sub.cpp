@@ -42,6 +42,12 @@ void UPR_LobbyMenu_Sub::OptionButtonClicked() const
 	}
 }
 
+void UPR_LobbyMenu_Sub::RefreshButtonClicked() const
+{
+	if (LobbyListView) { LobbyListView->ClearListItems(); }
+	GameInstance->FindSessions();
+}
+
 void UPR_LobbyMenu_Sub::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -52,6 +58,7 @@ void UPR_LobbyMenu_Sub::NativeConstruct()
 	JoinSessionButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::JoinSessionButtonClicked);
 	ExitButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::ExitButtonClicked);
 	OptionButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::OptionButtonClicked);
+	RefreshButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::RefreshButtonClicked);
 }
 
 UWidget* UPR_LobbyMenu_Sub::NativeGetDesiredFocusTarget() const
@@ -80,5 +87,26 @@ void UPR_LobbyMenu_Sub::AddMyCreatedSessionToList(const FOnlineSessionSettings& 
 void UPR_LobbyMenu_Sub::ResetCreateButton()
 {
 	if (!CreateSessionButton) { return; }
-	CreateSessionButton->SetIsEnabled(false);
+	CreateSessionButton->SetIsEnabled(true);
+}
+
+void UPR_LobbyMenu_Sub::UpdateSessionListView(const TArray<FOnlineSessionSearchResult>& SearchResults)
+{
+	if (!LobbyListView) { return; }
+	
+	for (const FOnlineSessionSearchResult& Result : SearchResults)
+	{
+		UPR_SessionDataRow* NewRow = NewObject<UPR_SessionDataRow>(this, UPR_SessionDataRow::StaticClass());
+		if (!NewRow) continue;
+		
+		FString DisplayRoomName;
+		Result.Session.SessionSettings.Get(FName("LobbyName"), DisplayRoomName);
+		NewRow->RoomName = DisplayRoomName.IsEmpty() ? TEXT("Unknown Room") : DisplayRoomName;
+		
+		NewRow->Ping = Result.PingInMs;
+		NewRow->MaxPlayers = Result.Session.SessionSettings.NumPublicConnections;
+		NewRow->CurrentPlayers = NewRow->MaxPlayers - Result.Session.NumOpenPublicConnections;
+		NewRow->SearchResult = Result;
+		LobbyListView->AddItem(NewRow);
+	}
 }

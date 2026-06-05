@@ -8,10 +8,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSessionSettings.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Online/OnlineSessionNames.h"
 
 #include "UI/PR_LobbyMenu_Sub.h"
 #include "UI/PR_MainMenu_Top.h"
 #include "PlayerController/PR_MainMenuController.h"
+
+#include "Utils/LogHelper.h"
 
 void UPR_GameIntance::Login()
 {
@@ -63,8 +66,14 @@ void UPR_GameIntance::Init()
 			LoginDelegateHandle = IdentityPtr->OnLoginCompleteDelegates->AddUObject(this, &UPR_GameIntance::LoginComleted);
 		}
 	}
+	
 	SessionPtr = OnlineSubsystem->GetSessionInterface();
-	SessionPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnCreateSessionCompleted);
+	
+	if (SessionPtr.IsValid())
+	{
+		FindSessionsDelegateHandle = SessionPtr->OnFindSessionsCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnFindSessionsCompleted);
+		SessionPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnCreateSessionCompleted);
+	}
 }
 
 void UPR_GameIntance::Shutdown()
@@ -73,17 +82,17 @@ void UPR_GameIntance::Shutdown()
 	{
 		IdentityPtr->OnLoginCompleteDelegates->Remove(LoginDelegateHandle);
 	}
-	
-	IdentityPtr = nullptr;
-	SessionPtr = nullptr;
-	OnlineSubsystem = nullptr;
+	if (SessionPtr.IsValid() && FindSessionsDelegateHandle.IsValid())
+	{
+		SessionPtr->OnFindSessionsCompleteDelegates.Remove(FindSessionsDelegateHandle);
+	}
 
 	Super::Shutdown();
 }
 
 void UPR_GameIntance::CreateSession(const FString& RoomName)
 {
-	if (!SessionPtr) { return; }
+	if (!SessionPtr) {return;}
 	
 	FString FinalRoomName = RoomName.IsEmpty() ? TEXT("Default Raid Room") : RoomName;
 	
@@ -100,6 +109,8 @@ void UPR_GameIntance::CreateSession(const FString& RoomName)
 	OnlineSessionSettings.Set(FName("LobbyName"), RoomName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	
 	SessionPtr->CreateSession(0, NAME_GameSession, OnlineSessionSettings);
+	
+	LogHelper::LogPrint(TEXT("CreateSession"));
 }
 
 void UPR_GameIntance::OnCreateSessionCompleted(FName SessionName, bool bWasSuccessful)
@@ -115,6 +126,8 @@ void UPR_GameIntance::OnCreateSessionCompleted(FName SessionName, bool bWasSucce
 					if (FNamedOnlineSession* ActiveSession = SessionPtr->GetNamedSession(SessionName))
 					{
 						LobbySub->AddMyCreatedSessionToList(ActiveSession->SessionSettings);
+						
+						LogHelper::LogPrint(TEXT("CreateSession Complated"));
 					}
 				}
 			}
@@ -135,6 +148,21 @@ void UPR_GameIntance::OnCreateSessionCompleted(FName SessionName, bool bWasSucce
 	}
 }
 
+void UPR_GameIntance::FindSessions()
+{
+	if (!SessionPtr.IsValid()) return;
+	
+	SessionSearchSettings = MakeShareable(new FOnlineSessionSearch());
+	
+	SessionSearchSettings->bIsLanQuery = false;
+	SessionSearchSettings->MaxSearchResults = 20;
+	
+	SessionSearchSettings->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
+	SessionSearchSettings->QuerySettings.Set(FName("LobbyName"), FString(""), EOnlineComparisonOp::NotEquals);
+	
+	SessionPtr->FindSessions(0, SessionSearchSettings.ToSharedRef());
+}
+
 void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error)
 {
 	if (bSuccessful)
@@ -147,5 +175,22 @@ void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUn
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Login failed %s"), *Error);
+	}
+}
+
+void UPR_GameIntance::OnFindSessionsCompleted(bool bWasSuccessful)
+{
+	if (APR_MainMenuController* PC = Cast<APR_MainMenuController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
+	{
+		if (UPR_MainMenu_Top* MasterUI = PC->GetMasterUI())
+		{
+			if (UPR_LobbyMenu_Sub* LobbySub = MasterUI->GetLobbySubWidget())
+			{
+				if (bWasSuccessful && SessionSearchSettings.IsValid())
+				{
+					LobbySub->UpdateSessionListView(SessionSearchSettings->SearchResults);
+				}
+			}
+		}
 	}
 }

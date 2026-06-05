@@ -27,11 +27,19 @@ public:
 	UFUNCTION()
 	void OnCreateSessionCompleted(FName SessionName, bool bWasSuccessful);
 	
+	void FindSessions();
+	
 private:
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineIdentityPtr IdentityPtr;
 	IOnlineSessionPtr SessionPtr;
+	TSharedPtr<class FOnlineSessionSearch> SessionSearchSettings;
 	
 	FDelegateHandle LoginDelegateHandle;
+	
 	void LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error);
+	
+	FDelegateHandle FindSessionsDelegateHandle;
+	UFUNCTION()
+	void OnFindSessionsCompleted(bool bWasSuccessful);
 };

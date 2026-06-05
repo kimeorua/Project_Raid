@@ -30,6 +30,9 @@ private:
 	TObjectPtr<UCommonButtonBase> ExitButton;
 	
 	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonButtonBase> RefreshButton;
+	
+	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonActivatableWidgetStack> PopUpStack;
 	
 	UPROPERTY(meta=(BindWidget))
@@ -56,6 +59,9 @@ private:
 	UFUNCTION()
 	void OptionButtonClicked() const;
 	
+	UFUNCTION()
+	void RefreshButtonClicked() const;
+	
 protected:
 	virtual void NativeConstruct() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
@@ -63,4 +69,5 @@ protected:
 public:
 	void AddMyCreatedSessionToList(const FOnlineSessionSettings& CreatedSettings);
 	void ResetCreateButton();
+	void UpdateSessionListView(const TArray<FOnlineSessionSearchResult>& SearchResults);
 };
