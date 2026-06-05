@@ -86,7 +86,11 @@ void UPR_GameIntance::Shutdown()
 	{
 		SessionPtr->OnFindSessionsCompleteDelegates.Remove(FindSessionsDelegateHandle);
 	}
-
+	
+	OnlineSubsystem = nullptr;
+	IdentityPtr = nullptr;
+	SessionPtr = nullptr;
+	
 	Super::Shutdown();
 }
 
