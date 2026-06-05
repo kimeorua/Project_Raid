@@ -16,7 +16,7 @@ class PROJECT_RAID_API APR_MainMenuController : public APlayerController, public
 public:
 	void ShowLobbyUI() const;
 	virtual void RequestOptionPopup(TSubclassOf<UCommonActivatableWidget> OptionClass) override;
-	
+	FORCEINLINE UPR_MainMenu_Top* GetMasterUI() const { return MainMenuUI; }
 protected:
 	virtual  void BeginPlay() override;
 	

@@ -6,12 +6,30 @@
 #include "CommonActivatableWidget.h"
 #include "PR_CreateSessionPopUp.generated.h"
 
-/**
- * 
- */
+class UCommonButtonBase;
+class UEditableTextBox;
+
 UCLASS()
 class PROJECT_RAID_API UPR_CreateSessionPopUp : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
+private:
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonButtonBase> CreateButton;
 	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonButtonBase> CancelButton;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UEditableTextBox> SessionNameTextBox;
+	
+	UFUNCTION()
+	void OnCancelButtonClicked();
+	
+	UFUNCTION()
+	void OnCreateSessionButtonClicked();
+	
+protected:
+	virtual void NativeConstruct() override;
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 };

@@ -7,9 +7,19 @@
 #include "GameInstance/PR_GameIntance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Interface/PR_OptionUIInterface.h"
+#include "UI/PR_CreateSessionPopUp.h"
+#include "Widgets/CommonActivatableWidgetContainer.h"
+#include "CommonListView.h"
+
+#include "ListRow/PR_SessionDataRow.h"
 
 void UPR_LobbyMenu_Sub::CreateSessionButtonClicked() const
 {
+	if (!CreateSessionPopUpWidgetClass || !PopUpStack) { return; }
+	
+	PopUpStack->AddWidget(CreateSessionPopUpWidgetClass);
+	
+	CreateSessionButton->SetIsEnabled(false);
 }
 
 void UPR_LobbyMenu_Sub::JoinSessionButtonClicked() const
@@ -47,4 +57,28 @@ void UPR_LobbyMenu_Sub::NativeConstruct()
 UWidget* UPR_LobbyMenu_Sub::NativeGetDesiredFocusTarget() const
 {
 	return IsValid(CreateSessionButton) ? CreateSessionButton : Super::NativeGetDesiredFocusTarget();
+}
+
+void UPR_LobbyMenu_Sub::AddMyCreatedSessionToList(const FOnlineSessionSettings& CreatedSettings)
+{
+	if (!LobbyListView) return;
+	
+	UPR_SessionDataRow* NewRow = NewObject<UPR_SessionDataRow>(this, UPR_SessionDataRow::StaticClass());
+	if (!NewRow) return;
+	
+	FString DisplayRoomName;
+	CreatedSettings.Get(FName("LobbyName"), DisplayRoomName);
+	NewRow->RoomName = DisplayRoomName.IsEmpty() ? TEXT("My Custom Raid Room") : DisplayRoomName;
+	
+	NewRow->Ping = 0;
+	NewRow->MaxPlayers = CreatedSettings.NumPublicConnections;
+	NewRow->CurrentPlayers = 1; 
+	
+	LobbyListView->AddItem(NewRow);
+}
+
+void UPR_LobbyMenu_Sub::ResetCreateButton()
+{
+	if (!CreateSessionButton) { return; }
+	CreateSessionButton->SetIsEnabled(false);
 }

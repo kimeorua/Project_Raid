@@ -21,9 +21,16 @@ public:
 	virtual  void Init() override;
 	virtual void Shutdown() override;
 	
+	UFUNCTION()
+	void CreateSession(const FString& RoomName);
+	
+	UFUNCTION()
+	void OnCreateSessionCompleted(FName SessionName, bool bWasSuccessful);
+	
 private:
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineIdentityPtr IdentityPtr;
+	IOnlineSessionPtr SessionPtr;
 	
 	FDelegateHandle LoginDelegateHandle;
 	void LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error);

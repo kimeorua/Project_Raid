@@ -22,6 +22,12 @@ void UPR_MainMenu_Top::PushOptionWidget(TSubclassOf<UCommonActivatableWidget> Op
 	OptionStack->AddWidget(OptionUIClass);
 }
 
+UPR_LobbyMenu_Sub* UPR_MainMenu_Top::GetLobbySubWidget() const
+{
+	if (!MenuStack) return nullptr;
+	return Cast<UPR_LobbyMenu_Sub>(MenuStack->GetActiveWidget());
+}
+
 void UPR_MainMenu_Top::NativeConstruct()
 {
 	Super::NativeConstruct();

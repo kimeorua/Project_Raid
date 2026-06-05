@@ -8,6 +8,9 @@
 
 class UCommonButtonBase;
 class UPR_GameIntance;
+class UCommonActivatableWidgetStack;
+class UCommonListView;
+class FOnlineSessionSettings;
 
 UCLASS()
 class PROJECT_RAID_API UPR_LobbyMenu_Sub : public UCommonActivatableWidget
@@ -26,11 +29,20 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonButtonBase> ExitButton;
 	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonActivatableWidgetStack> PopUpStack;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonListView> LobbyListView;
+	
 	UPROPERTY()
 	TObjectPtr<UPR_GameIntance> GameInstance;
 	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UCommonActivatableWidget> GameOptionWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
+	TSubclassOf<UCommonActivatableWidget> CreateSessionPopUpWidgetClass;
 	
 	UFUNCTION()
 	void CreateSessionButtonClicked() const;
@@ -47,4 +59,8 @@ private:
 protected:
 	virtual void NativeConstruct() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+	
+public:
+	void AddMyCreatedSessionToList(const FOnlineSessionSettings& CreatedSettings);
+	void ResetCreateButton();
 };

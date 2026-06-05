@@ -18,7 +18,7 @@ class PROJECT_RAID_API UPR_MainMenu_Top : public UCommonUserWidget
 public:
 	void PopUpLobbyUI() const;
 	void PushOptionWidget(TSubclassOf<UCommonActivatableWidget> OptionUIClass);
-	
+	UPR_LobbyMenu_Sub* GetLobbySubWidget() const;
 private:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonActivatableWidgetStack> MenuStack;
