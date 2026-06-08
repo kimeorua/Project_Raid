@@ -7,7 +7,6 @@
 #include "OnlineSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSessionSettings.h"
-#include "Interfaces/OnlineSessionInterface.h"
 #include "Online/OnlineSessionNames.h"
 
 #include "UI/PR_LobbyMenu_Sub.h"
@@ -73,6 +72,7 @@ void UPR_GameIntance::Init()
 	{
 		FindSessionsDelegateHandle = SessionPtr->OnFindSessionsCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnFindSessionsCompleted);
 		SessionPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnCreateSessionCompleted);
+		SessionPtr->OnJoinSessionCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnJoinSessionCompleted);
 	}
 }
 
@@ -121,20 +121,14 @@ void UPR_GameIntance::OnCreateSessionCompleted(FName SessionName, bool bWasSucce
 {
 	if (bWasSuccessful)
 	{
-		if (APR_MainMenuController* PC = Cast<APR_MainMenuController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
+		if (!SelectLevel.IsValid())
 		{
-			if (UPR_MainMenu_Top* MasterUI = PC->GetMasterUI())
-			{
-				if (UPR_LobbyMenu_Sub* LobbySub = MasterUI->GetLobbySubWidget())
-				{
-					if (FNamedOnlineSession* ActiveSession = SessionPtr->GetNamedSession(SessionName))
-					{
-						LobbySub->AddMyCreatedSessionToList(ActiveSession->SessionSettings);
-						
-						LogHelper::LogPrint(TEXT("CreateSession Complated"));
-					}
-				}
-			}
+			SelectLevel.LoadSynchronous();
+		}
+		if (SelectLevel.IsValid())
+		{
+			const FName LevelName = *FPackageName::ObjectPathToPackageName(SelectLevel.ToString());
+			GetWorld()->ServerTravel(LevelName.ToString() + "?listen");
 		}
 	}
 	else
@@ -167,6 +161,12 @@ void UPR_GameIntance::FindSessions()
 	SessionPtr->FindSessions(0, SessionSearchSettings.ToSharedRef());
 }
 
+void UPR_GameIntance::JoinSelectedSession(const FOnlineSessionSearchResult& TargetSession)
+{
+	if (!SessionPtr.IsValid()) { return; }
+	SessionPtr->JoinSession(0, NAME_GameSession, TargetSession);
+}
+
 void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error)
 {
 	if (bSuccessful)
@@ -197,4 +197,21 @@ void UPR_GameIntance::OnFindSessionsCompleted(bool bWasSuccessful)
 			}
 		}
 	}
+}
+
+void UPR_GameIntance::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	if (Result == EOnJoinSessionCompleteResult::Success)
+	{
+		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (PC && SessionPtr.IsValid())
+		{
+			FString ConnectAddress;
+			if (SessionPtr->GetResolvedConnectString(SessionName, ConnectAddress))
+			{
+				PC->ClientTravel(ConnectAddress, ETravelType::TRAVEL_Absolute);
+			}
+		}
+	}
+	else {return;}
 }

@@ -21,9 +21,6 @@ private:
 	TObjectPtr<UCommonButtonBase> CreateSessionButton;
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UCommonButtonBase> JoinSessionButton;
-	
-	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonButtonBase> OptionButton;
 	
 	UPROPERTY(meta=(BindWidget))
@@ -51,9 +48,6 @@ private:
 	void CreateSessionButtonClicked() const;
 	
 	UFUNCTION()
-	void JoinSessionButtonClicked() const;
-	
-	UFUNCTION()
 	void ExitButtonClicked() const;
 	
 	UFUNCTION()
@@ -67,7 +61,6 @@ protected:
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
 public:
-	void AddMyCreatedSessionToList(const FOnlineSessionSettings& CreatedSettings);
 	void ResetCreateButton();
 	void UpdateSessionListView(const TArray<FOnlineSessionSearchResult>& SearchResults);
 };

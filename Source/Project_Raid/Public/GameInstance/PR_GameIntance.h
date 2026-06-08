@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "OnlineSubsystem.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "PR_GameIntance.generated.h"
 
 class IOnlineSubsystem;
@@ -28,18 +29,24 @@ public:
 	void OnCreateSessionCompleted(FName SessionName, bool bWasSuccessful);
 	
 	void FindSessions();
+	void JoinSelectedSession(const FOnlineSessionSearchResult& TargetSession);
 	
 private:
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineIdentityPtr IdentityPtr;
 	IOnlineSessionPtr SessionPtr;
 	TSharedPtr<class FOnlineSessionSearch> SessionSearchSettings;
-	
 	FDelegateHandle LoginDelegateHandle;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Level", meta=(AllowPrivateAccess=true))
+	TSoftObjectPtr<UWorld> SelectLevel;
 	
 	void LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error);
 	
 	FDelegateHandle FindSessionsDelegateHandle;
+	
 	UFUNCTION()
 	void OnFindSessionsCompleted(bool bWasSuccessful);
+	
+	void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 };

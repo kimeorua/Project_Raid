@@ -22,10 +22,6 @@ void UPR_LobbyMenu_Sub::CreateSessionButtonClicked() const
 	CreateSessionButton->SetIsEnabled(false);
 }
 
-void UPR_LobbyMenu_Sub::JoinSessionButtonClicked() const
-{
-}
-
 void UPR_LobbyMenu_Sub::ExitButtonClicked() const
 {
 	if (!GameInstance) { return; }
@@ -55,7 +51,6 @@ void UPR_LobbyMenu_Sub::NativeConstruct()
 	GameInstance = GetGameInstance<UPR_GameIntance>();
 	
 	CreateSessionButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::CreateSessionButtonClicked);
-	JoinSessionButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::JoinSessionButtonClicked);
 	ExitButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::ExitButtonClicked);
 	OptionButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::OptionButtonClicked);
 	RefreshButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::RefreshButtonClicked);
@@ -64,24 +59,6 @@ void UPR_LobbyMenu_Sub::NativeConstruct()
 UWidget* UPR_LobbyMenu_Sub::NativeGetDesiredFocusTarget() const
 {
 	return IsValid(CreateSessionButton) ? CreateSessionButton : Super::NativeGetDesiredFocusTarget();
-}
-
-void UPR_LobbyMenu_Sub::AddMyCreatedSessionToList(const FOnlineSessionSettings& CreatedSettings)
-{
-	if (!LobbyListView) return;
-	
-	UPR_SessionDataRow* NewRow = NewObject<UPR_SessionDataRow>(this, UPR_SessionDataRow::StaticClass());
-	if (!NewRow) return;
-	
-	FString DisplayRoomName;
-	CreatedSettings.Get(FName("LobbyName"), DisplayRoomName);
-	NewRow->RoomName = DisplayRoomName.IsEmpty() ? TEXT("My Custom Raid Room") : DisplayRoomName;
-	
-	NewRow->Ping = 0;
-	NewRow->MaxPlayers = CreatedSettings.NumPublicConnections;
-	NewRow->CurrentPlayers = 1; 
-	
-	LobbyListView->AddItem(NewRow);
 }
 
 void UPR_LobbyMenu_Sub::ResetCreateButton()

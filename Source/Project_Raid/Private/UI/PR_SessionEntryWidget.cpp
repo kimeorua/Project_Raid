@@ -4,17 +4,35 @@
 #include "UI/PR_SessionEntryWidget.h"
 #include "ListRow/PR_SessionDataRow.h"
 #include "CommonTextBlock.h"
+#include "CommonButtonBase.h"
+
+#include "GameInstance/PR_GameIntance.h"
 
 void UPR_SessionEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
 	
-	UPR_SessionDataRow* SessionData = Cast<UPR_SessionDataRow>(ListItemObject);
-	if (!SessionData) return;
+	CachedSessionData = Cast<UPR_SessionDataRow>(ListItemObject);
+	if (!CachedSessionData) return;
 	
-	RoomNameText->SetText(FText::FromString(SessionData->RoomName));
-	PingText->SetText(FText::FromString(FString::FromInt(SessionData->Ping) + TEXT("ms")));
+	RoomNameText->SetText(FText::FromString(CachedSessionData->RoomName));
+	PingText->SetText(FText::FromString(FString::FromInt(CachedSessionData->Ping) + TEXT("ms")));
     
-	FString PlayerCountStr = FString::Printf(TEXT("%d / %d"), SessionData->CurrentPlayers, SessionData->MaxPlayers);
+	FString PlayerCountStr = FString::Printf(TEXT("%d / %d"), CachedSessionData->CurrentPlayers, CachedSessionData->MaxPlayers);
 	PlayerCountText->SetText(FText::FromString(PlayerCountStr));
+}
+
+void UPR_SessionEntryWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	JoinButton->OnClicked().AddUObject(this, &UPR_SessionEntryWidget::OnJoinButtonClicked);
+}
+
+void UPR_SessionEntryWidget::OnJoinButtonClicked()
+{
+	if (!CachedSessionData) { return; }
+	UPR_GameIntance* GI = Cast<UPR_GameIntance>(GetGameInstance());
+	if (!GI) { return; }
+	
+	GI->JoinSelectedSession(CachedSessionData->SearchResult);
 }
