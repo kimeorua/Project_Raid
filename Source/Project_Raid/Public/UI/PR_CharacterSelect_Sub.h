@@ -9,6 +9,7 @@
 
 class UCommonButtonBase;
 class UCommonActivatableWidget;
+class UCommonListView;
 
 UCLASS()
 class PROJECT_RAID_API UPR_CharacterSelect_Sub : public UCommonActivatableWidget
@@ -24,6 +25,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UCommonActivatableWidget> GameOptionWidgetClass;
 	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonListView> PlayerInfoListView;
+	
 	UFUNCTION()
 	void ExitButtonClicked() const;
 	
@@ -32,4 +36,8 @@ private:
 	
 protected:
 	virtual void NativeConstruct() override;
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+	
+public:
+	void UpdatePlayerInfoList();
 };

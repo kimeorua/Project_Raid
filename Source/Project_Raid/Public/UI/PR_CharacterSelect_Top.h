@@ -24,9 +24,13 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UPR_CharacterSelect_Sub> CharacterSelectWidgetClass;
 	
+	UPROPERTY()
+	TObjectPtr<UPR_CharacterSelect_Sub> CharacterSelect_SubUI;
+	
 protected:
 	virtual void NativeConstruct() override;
 	
 public:
 	void PushOptionWidget(TSubclassOf<UCommonActivatableWidget> OptionUIClass);
+	UPR_CharacterSelect_Sub* GetCharacterSelect_Sub() const;
 };

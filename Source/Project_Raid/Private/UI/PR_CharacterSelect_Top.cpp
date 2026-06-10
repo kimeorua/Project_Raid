@@ -13,7 +13,7 @@ void UPR_CharacterSelect_Top::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	CharacterSelectMenuStack->AddWidget<UPR_CharacterSelect_Sub>(CharacterSelectWidgetClass);
+	CharacterSelect_SubUI = CharacterSelectMenuStack->AddWidget<UPR_CharacterSelect_Sub>(CharacterSelectWidgetClass);
 	
 	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
 	UPR_LocalPlayerSubsystem_Option* LocalPlayerSubsystem_Option = LocalPlayer->GetSubsystem<UPR_LocalPlayerSubsystem_Option>();
@@ -25,4 +25,9 @@ void UPR_CharacterSelect_Top::PushOptionWidget(TSubclassOf<UCommonActivatableWid
 	if (!OptionStack || !OptionUIClass) { return;}
 	
 	OptionStack->AddWidget(OptionUIClass);
+}
+
+UPR_CharacterSelect_Sub* UPR_CharacterSelect_Top::GetCharacterSelect_Sub() const
+{
+	return  CharacterSelect_SubUI ? CharacterSelect_SubUI : nullptr;
 }

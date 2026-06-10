@@ -114,7 +114,7 @@ void UPR_GameIntance::CreateSession(const FString& RoomName)
 	
 	SessionPtr->CreateSession(0, NAME_GameSession, OnlineSessionSettings);
 	
-	LogHelper::LogPrint(TEXT("CreateSession"));
+	//LogHelper::LogPrint(TEXT("CreateSession"));
 }
 
 void UPR_GameIntance::OnCreateSessionCompleted(FName SessionName, bool bWasSuccessful)

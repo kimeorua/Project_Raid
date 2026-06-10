@@ -5,9 +5,14 @@
 
 #include "Kismet/KismetSystemLibrary.h"
 #include "CommonButtonBase.h"
+#include "CommonListView.h"
 
 #include "GameInstance/PR_GameIntance.h"
 #include "Interface/PR_OptionUIInterface.h"
+#include "ListRow/PR_PlayerInfoDataRow.h"
+#include "GameState/PR_CharacterSelectGameState.h"
+
+#include "Utils/LogHelper.h"
 
 void UPR_CharacterSelect_Sub::ExitButtonClicked() const
 {
@@ -32,4 +37,32 @@ void UPR_CharacterSelect_Sub::NativeConstruct()
 	
 	ExitButton->OnClicked().AddUObject(this, &UPR_CharacterSelect_Sub::ExitButtonClicked);
 	OptionButton->OnClicked().AddUObject(this, &UPR_CharacterSelect_Sub::OptionButtonClicked);
+	
+	SetDesiredFocusWidget(NativeGetDesiredFocusTarget());
+	
+	UpdatePlayerInfoList();
+}
+
+UWidget* UPR_CharacterSelect_Sub::NativeGetDesiredFocusTarget() const
+{
+	return IsValid(OptionButton) ? OptionButton : Super::NativeGetDesiredFocusTarget();
+}
+
+void UPR_CharacterSelect_Sub::UpdatePlayerInfoList()
+{
+	if (!PlayerInfoListView) return;
+
+	PlayerInfoListView->ClearListItems();
+
+	APR_CharacterSelectGameState* GameState = Cast<APR_CharacterSelectGameState>(GetWorld()->GetGameState());
+	if (!GameState) return;
+	
+	for (APlayerState* PS : GameState->PlayerArray)
+	{
+		UPR_PlayerInfoDataRow* NewRow = NewObject<UPR_PlayerInfoDataRow>(this, UPR_PlayerInfoDataRow::StaticClass());
+		if (!NewRow) continue;
+		
+		NewRow->PlayerName = "Test";
+		PlayerInfoListView->AddItem(NewRow);
+	}
 }

@@ -9,6 +9,11 @@ void APR_LobbyPlayerController::RequestOptionPopup(TSubclassOf<UCommonActivatabl
 	CharacterSelectUI->PushOptionWidget(OptionClass);
 }
 
+UPR_CharacterSelect_Top* APR_LobbyPlayerController::GetCharacterSelectUI() const
+{
+	return CharacterSelectUI ? CharacterSelectUI : nullptr;
+}
+
 void APR_LobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

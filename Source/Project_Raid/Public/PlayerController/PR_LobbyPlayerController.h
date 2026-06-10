@@ -16,6 +16,8 @@ class PROJECT_RAID_API APR_LobbyPlayerController : public APlayerController, pub
 	GENERATED_BODY()
 public:
 	virtual void RequestOptionPopup(TSubclassOf<UCommonActivatableWidget> OptionClass) override;
+	
+	UPR_CharacterSelect_Top* GetCharacterSelectUI() const;
 protected:
 	virtual  void BeginPlay() override;
 	
