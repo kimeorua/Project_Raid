@@ -11,6 +11,7 @@
 #include "Interface/PR_OptionUIInterface.h"
 #include "ListRow/PR_PlayerInfoDataRow.h"
 #include "GameState/PR_CharacterSelectGameState.h"
+#include "PlayerState/PR_CharacterSelectState.h"
 
 #include "Utils/LogHelper.h"
 
@@ -50,19 +51,47 @@ UWidget* UPR_CharacterSelect_Sub::NativeGetDesiredFocusTarget() const
 
 void UPR_CharacterSelect_Sub::UpdatePlayerInfoList()
 {
-	if (!PlayerInfoListView) return;
-
-	PlayerInfoListView->ClearListItems();
+	bool bHasUninitializedPlayer = false;
+	
+	if (!PlayerInfoListView) { return; }
 
 	APR_CharacterSelectGameState* GameState = Cast<APR_CharacterSelectGameState>(GetWorld()->GetGameState());
-	if (!GameState) return;
+	if (!GameState) { return; }
 	
+	TArray<UObject*> NewItems;
+
 	for (APlayerState* PS : GameState->PlayerArray)
 	{
-		UPR_PlayerInfoDataRow* NewRow = NewObject<UPR_PlayerInfoDataRow>(this, UPR_PlayerInfoDataRow::StaticClass());
-		if (!NewRow) continue;
+		if (!PS) { continue; }
 		
-		NewRow->PlayerName = "Test";
-		PlayerInfoListView->AddItem(NewRow);
+		APR_CharacterSelectState* SelectPS = Cast<APR_CharacterSelectState>(PS);
+		
+		if (!SelectPS) { return; }
+		
+		if (SelectPS->GetPlayerName().IsEmpty() || SelectPS->GetPlayerName().Equals(TEXT("Player"), ESearchCase::IgnoreCase))
+		{
+			bHasUninitializedPlayer = true;
+			continue;
+		}
+
+		UPR_PlayerInfoDataRow* NewRow = NewObject<UPR_PlayerInfoDataRow>(this, UPR_PlayerInfoDataRow::StaticClass());
+		if (NewRow)
+		{
+			NewRow->PlayerName = PS->GetPlayerName();
+			NewItems.Add(NewRow);
+		}
+	}
+	if (NewItems.Num() > 0)
+	{
+		PlayerInfoListView->ClearListItems();
+		for (UObject* Item : NewItems)
+		{
+			PlayerInfoListView->AddItem(Item);
+		}
+	}
+	if (bHasUninitializedPlayer)
+	{
+		FTimerHandle RetryTimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(RetryTimerHandle, this, &UPR_CharacterSelect_Sub::UpdatePlayerInfoList, 0.1f, false);
 	}
 }
