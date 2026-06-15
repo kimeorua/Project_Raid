@@ -41,6 +41,12 @@ void UPR_CharacterSelect_Sub::NativeConstruct()
 	
 	SetDesiredFocusWidget(NativeGetDesiredFocusTarget());
 	
+	if (APR_CharacterSelectGameState* GS = Cast<APR_CharacterSelectGameState>(GetWorld()->GetGameState()))
+	{
+		GS->OnLobbyRefreshRequired.RemoveDynamic(this, &UPR_CharacterSelect_Sub::UpdatePlayerInfoList);
+		GS->OnLobbyRefreshRequired.AddDynamic(this, &UPR_CharacterSelect_Sub::UpdatePlayerInfoList);
+	}
+	
 	UpdatePlayerInfoList();
 }
 
@@ -78,6 +84,8 @@ void UPR_CharacterSelect_Sub::UpdatePlayerInfoList()
 		if (NewRow)
 		{
 			NewRow->PlayerName = PS->GetPlayerName();
+			NewRow->SelectCharacterType = SelectPS->GetCharacterType();
+			NewRow->OwningPlayerState = SelectPS;
 			NewItems.Add(NewRow);
 		}
 	}

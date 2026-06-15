@@ -2,7 +2,9 @@
 
 
 #include "PlayerController/PR_LobbyPlayerController.h"
+
 #include "UI/PR_CharacterSelect_Top.h"
+#include "PlayerState/PR_CharacterSelectState.h"
 
 void APR_LobbyPlayerController::RequestOptionPopup(TSubclassOf<UCommonActivatableWidget> OptionClass)
 {
@@ -12,6 +14,14 @@ void APR_LobbyPlayerController::RequestOptionPopup(TSubclassOf<UCommonActivatabl
 UPR_CharacterSelect_Top* APR_LobbyPlayerController::GetCharacterSelectUI() const
 {
 	return CharacterSelectUI ? CharacterSelectUI : nullptr;
+}
+
+void APR_LobbyPlayerController::RequestChangeCharacter(ECharacterType NewType)
+{
+	if (APR_CharacterSelectState* PR_PS = GetPlayerState<APR_CharacterSelectState>())
+	{
+		PR_PS->Server_SetCharacterType(NewType);
+	}
 }
 
 void APR_LobbyPlayerController::BeginPlay()

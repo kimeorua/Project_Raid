@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/PR_OptionUIInterface.h"
+#include "Type/Enums/PR_Enums.h"
 #include "PR_LobbyPlayerController.generated.h"
 
 class UPR_CharacterSelect_Top;
 class UCommonActivatableWidget;
+
 
 UCLASS()
 class PROJECT_RAID_API APR_LobbyPlayerController : public APlayerController, public IPR_OptionUIInterface
@@ -18,6 +20,9 @@ public:
 	virtual void RequestOptionPopup(TSubclassOf<UCommonActivatableWidget> OptionClass) override;
 	
 	UPR_CharacterSelect_Top* GetCharacterSelectUI() const;
+	
+	void RequestChangeCharacter(ECharacterType NewType);
+	
 protected:
 	virtual  void BeginPlay() override;
 	

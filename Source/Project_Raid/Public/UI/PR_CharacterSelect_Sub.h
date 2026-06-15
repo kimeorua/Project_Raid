@@ -39,5 +39,6 @@ protected:
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
 public:
+	UFUNCTION()
 	void UpdatePlayerInfoList();
 };

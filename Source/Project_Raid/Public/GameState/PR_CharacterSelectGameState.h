@@ -6,6 +6,7 @@
 #include "GameFramework/GameState.h"
 #include "PR_CharacterSelectGameState.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLobbyRefreshRequired);
 
 UCLASS()
 class PROJECT_RAID_API APR_CharacterSelectGameState : public AGameState
@@ -14,4 +15,7 @@ class PROJECT_RAID_API APR_CharacterSelectGameState : public AGameState
 public:
 	virtual void AddPlayerState(APlayerState* PlayerState) override;
 	virtual void RemovePlayerState(APlayerState* PlayerState) override;
+	
+	UPROPERTY(BlueprintAssignable, Category = "PR|Delegates")
+	FOnLobbyRefreshRequired OnLobbyRefreshRequired;
 };
