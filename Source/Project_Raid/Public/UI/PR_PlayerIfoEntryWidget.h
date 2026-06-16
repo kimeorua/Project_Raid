@@ -69,6 +69,8 @@ private:
 	
 	UFUNCTION()
 	void OnKatanaButtonClicked();
+	
+	void FocusTargetReset(UCommonButtonBase* Button);
 
 protected:
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;

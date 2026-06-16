@@ -9,6 +9,8 @@
 class UCommonButtonBase;
 class UEditableTextBox;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE (FOnCanelButtonCliked);
+
 UCLASS()
 class PROJECT_RAID_API UPR_CreateSessionPopUp : public UCommonActivatableWidget
 {
@@ -32,4 +34,8 @@ private:
 protected:
 	virtual void NativeConstruct() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+	virtual void NativeOnDeactivated() override;
+	
+public:
+	FOnCanelButtonCliked OnCanelButtonCliked;
 };

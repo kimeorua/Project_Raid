@@ -68,6 +68,15 @@ void UPR_PlayerIfoEntryWidget::OnKatanaButtonClicked()
 	SetWeaponIcon(ECharacterType::Katana);
 }
 
+void UPR_PlayerIfoEntryWidget::FocusTargetReset(UCommonButtonBase* Button)
+{
+	ULocalPlayer* LocalPlayer = CachedPlayerController->GetLocalPlayer();
+	if (LocalPlayer)
+	{
+		Button->SetFocus();
+	}
+}
+
 void UPR_PlayerIfoEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
@@ -82,9 +91,7 @@ void UPR_PlayerIfoEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject
 
 	if (CachedPlayerInfoData->OwningPlayerState)
 	{
-		APlayerController* SlotPC = CachedPlayerInfoData->OwningPlayerState->GetPlayerController();
-        
-		if (SlotPC)
+		if (APlayerController* SlotPC = CachedPlayerInfoData->OwningPlayerState->GetPlayerController())
 		{
 			bIsMySlot = SlotPC->IsLocalController();
 		}
@@ -97,6 +104,40 @@ void UPR_PlayerIfoEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject
 		}
 	}
 	
+	if (bIsMySlot && CachedPlayerController)
+	{
+		ULocalPlayer* LocalPlayer = CachedPlayerController->GetLocalPlayer();
+		if (LocalPlayer)
+		{
+			GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
+			{
+				if (!CachedPlayerInfoData || !CachedPlayerInfoData->OwningPlayerState) return;
+
+				switch (CachedPlayerInfoData->OwningPlayerState->GetCharacterType())
+				{
+				case ECharacterType::SwordShield: 
+					FocusTargetReset(SelectSwordShieldButton); 
+					break;
+					
+				case ECharacterType::DualSword:   
+					FocusTargetReset(SelectDualSwordButton);   
+					break;
+					
+				case ECharacterType::Lance:
+					FocusTargetReset(SelectLanceButton);       
+					break;
+					
+				case ECharacterType::Katana:     
+					FocusTargetReset(SelectKatanaButton);      
+					break;
+					
+				default: 
+					break;
+				}
+			});
+		}
+	}
+
 	SelectSwordShieldButton->SetIsEnabled(bIsMySlot);
 	SelectDualSwordButton->SetIsEnabled(bIsMySlot);
 	SelectLanceButton->SetIsEnabled(bIsMySlot);

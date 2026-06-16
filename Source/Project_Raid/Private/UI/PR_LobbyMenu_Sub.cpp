@@ -16,8 +16,11 @@ void UPR_LobbyMenu_Sub::CreateSessionButtonClicked() const
 {
 	if (!CreateSessionPopUpWidgetClass || !PopUpStack) { return; }
 	
-	PopUpStack->AddWidget(CreateSessionPopUpWidgetClass);
-	
+	if (UPR_CreateSessionPopUp* PopUp = Cast<UPR_CreateSessionPopUp>(PopUpStack->AddWidget(CreateSessionPopUpWidgetClass)))
+	{
+		PopUp->OnCanelButtonCliked.RemoveDynamic(this, &UPR_LobbyMenu_Sub::ResetCreateButton);
+		PopUp->OnCanelButtonCliked.AddDynamic(this, &UPR_LobbyMenu_Sub::ResetCreateButton);
+	}
 	CreateSessionButton->SetIsEnabled(false);
 }
 
@@ -64,6 +67,7 @@ void UPR_LobbyMenu_Sub::ResetCreateButton()
 {
 	if (!CreateSessionButton) { return; }
 	CreateSessionButton->SetIsEnabled(true);
+	CreateSessionButton->SetFocus();
 }
 
 void UPR_LobbyMenu_Sub::UpdateSessionListView(const TArray<FOnlineSessionSearchResult>& SearchResults)

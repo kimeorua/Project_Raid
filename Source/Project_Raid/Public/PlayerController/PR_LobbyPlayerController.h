@@ -24,7 +24,7 @@ public:
 	void RequestChangeCharacter(ECharacterType NewType);
 	
 protected:
-	virtual  void BeginPlay() override;
+	virtual void BeginPlay() override;
 	
 private:
 	UPROPERTY()

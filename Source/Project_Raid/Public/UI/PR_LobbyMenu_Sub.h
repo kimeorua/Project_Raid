@@ -61,6 +61,8 @@ protected:
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	
 public:
+	UFUNCTION()
 	void ResetCreateButton();
+	
 	void UpdateSessionListView(const TArray<FOnlineSessionSearchResult>& SearchResults);
 };

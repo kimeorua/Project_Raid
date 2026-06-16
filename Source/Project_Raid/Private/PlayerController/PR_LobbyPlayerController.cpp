@@ -2,6 +2,8 @@
 
 
 #include "PlayerController/PR_LobbyPlayerController.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Engine/Engine.h"
 
 #include "UI/PR_CharacterSelect_Top.h"
 #include "PlayerState/PR_CharacterSelectState.h"

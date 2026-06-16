@@ -34,3 +34,10 @@ UWidget* UPR_CreateSessionPopUp::NativeGetDesiredFocusTarget() const
 {
 	return CreateButton ? CreateButton : nullptr;
 }
+
+void UPR_CreateSessionPopUp::NativeOnDeactivated()
+{
+	Super::NativeOnDeactivated();
+	
+	OnCanelButtonCliked.Broadcast();
+}
