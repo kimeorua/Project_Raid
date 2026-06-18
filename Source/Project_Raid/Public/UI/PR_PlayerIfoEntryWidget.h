@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "CommonUserWidget.h"
-#include "Blueprint/IUserObjectListEntry.h"
 #include "Type/Enums/PR_Enums.h"
 #include "PR_PlayerIfoEntryWidget.generated.h"
 
@@ -14,9 +13,10 @@ class UCommonButtonBase;
 class UImage;
 class UTexture2D;
 class APR_LobbyPlayerController;
+class APR_CharacterSelectState;
 
 UCLASS()
-class PROJECT_RAID_API UPR_PlayerIfoEntryWidget : public UCommonUserWidget, public IUserObjectListEntry
+class PROJECT_RAID_API UPR_PlayerIfoEntryWidget : public UCommonUserWidget
 {
 	GENERATED_BODY()
 private:
@@ -39,7 +39,7 @@ private:
 	TObjectPtr<UImage> SelectedWeaponIcon;
 	
 	UPROPERTY()
-	TObjectPtr<UPR_PlayerInfoDataRow> CachedPlayerInfoData;
+	TObjectPtr<APR_CharacterSelectState> CachedPlayerInfoData;
 	
 	UPROPERTY()
 	TObjectPtr<APR_LobbyPlayerController> CachedPlayerController;
@@ -69,10 +69,16 @@ private:
 	
 	UFUNCTION()
 	void OnKatanaButtonClicked();
-	
-	void FocusTargetReset(UCommonButtonBase* Button);
 
 protected:
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	virtual void NativeConstruct() override;
+	
+public:
+	void InitializeEntryData(APR_CharacterSelectState* Data);
+	
+	UFUNCTION(BlueprintPure)
+	UWidget* DownActionFocusWidget();
+	
+	UFUNCTION(BlueprintPure)
+	UWidget* UpActionFocusWidget();
 };

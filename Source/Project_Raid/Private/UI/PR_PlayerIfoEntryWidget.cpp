@@ -8,7 +8,10 @@
 #include "Components/Image.h"
 
 #include "PlayerController/PR_LobbyPlayerController.h"
-#include "ListRow/PR_PlayerInfoDataRow.h"
+#include "UI/PR_CharacterSelect_Sub.h"
+#include "PlayerState/PR_CharacterSelectState.h"
+
+#include "Utils/LogHelper.h"
 
 void UPR_PlayerIfoEntryWidget::SetWeaponIcon(ECharacterType Type)
 {
@@ -68,82 +71,6 @@ void UPR_PlayerIfoEntryWidget::OnKatanaButtonClicked()
 	SetWeaponIcon(ECharacterType::Katana);
 }
 
-void UPR_PlayerIfoEntryWidget::FocusTargetReset(UCommonButtonBase* Button)
-{
-	ULocalPlayer* LocalPlayer = CachedPlayerController->GetLocalPlayer();
-	if (LocalPlayer)
-	{
-		Button->SetFocus();
-	}
-}
-
-void UPR_PlayerIfoEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
-	CachedPlayerInfoData = Cast<UPR_PlayerInfoDataRow>(ListItemObject);
-	
-	if (!CachedPlayerInfoData) { return; }
-	
-	PlayerName->SetText(FText::FromString(CachedPlayerInfoData->PlayerName));
-	SetWeaponIcon(CachedPlayerInfoData->SelectCharacterType);
-	
-	bool bIsMySlot = false;
-
-	if (CachedPlayerInfoData->OwningPlayerState)
-	{
-		if (APlayerController* SlotPC = CachedPlayerInfoData->OwningPlayerState->GetPlayerController())
-		{
-			bIsMySlot = SlotPC->IsLocalController();
-		}
-		else
-		{
-			if (APlayerController* MyLocalPC = GetOwningPlayer())
-			{
-				bIsMySlot = (CachedPlayerInfoData->OwningPlayerState == MyLocalPC->GetPlayerState<APR_CharacterSelectState>());
-			}
-		}
-	}
-	
-	if (bIsMySlot && CachedPlayerController)
-	{
-		ULocalPlayer* LocalPlayer = CachedPlayerController->GetLocalPlayer();
-		if (LocalPlayer)
-		{
-			GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
-			{
-				if (!CachedPlayerInfoData || !CachedPlayerInfoData->OwningPlayerState) return;
-
-				switch (CachedPlayerInfoData->OwningPlayerState->GetCharacterType())
-				{
-				case ECharacterType::SwordShield: 
-					FocusTargetReset(SelectSwordShieldButton); 
-					break;
-					
-				case ECharacterType::DualSword:   
-					FocusTargetReset(SelectDualSwordButton);   
-					break;
-					
-				case ECharacterType::Lance:
-					FocusTargetReset(SelectLanceButton);       
-					break;
-					
-				case ECharacterType::Katana:     
-					FocusTargetReset(SelectKatanaButton);      
-					break;
-					
-				default: 
-					break;
-				}
-			});
-		}
-	}
-
-	SelectSwordShieldButton->SetIsEnabled(bIsMySlot);
-	SelectDualSwordButton->SetIsEnabled(bIsMySlot);
-	SelectLanceButton->SetIsEnabled(bIsMySlot);
-	SelectKatanaButton->SetIsEnabled(bIsMySlot);
-}
-
 void UPR_PlayerIfoEntryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -154,4 +81,49 @@ void UPR_PlayerIfoEntryWidget::NativeConstruct()
 	SelectDualSwordButton->OnClicked().AddUObject(this, &UPR_PlayerIfoEntryWidget::OnDualSwordButtonClicked);
 	SelectLanceButton->OnClicked().AddUObject(this, &UPR_PlayerIfoEntryWidget::OnLanceButtonClicked);
 	SelectKatanaButton->OnClicked().AddUObject(this, &UPR_PlayerIfoEntryWidget::OnKatanaButtonClicked);
+}
+
+void UPR_PlayerIfoEntryWidget::InitializeEntryData(APR_CharacterSelectState* InData)
+{
+	if (!InData) { return; }
+	
+	CachedPlayerInfoData = InData;
+	
+	PlayerName->SetText(FText::FromString(CachedPlayerInfoData->GetPlayerName()));
+	SetWeaponIcon(CachedPlayerInfoData->GetCharacterType());
+	
+	bool bIsMySlot = false;
+	
+	if (APlayerController* MyPC = GetOwningPlayer())
+	{
+		bIsMySlot = (CachedPlayerInfoData->GetOwningController() == MyPC);
+			
+		if (!bIsMySlot && MyPC->PlayerState)
+		{
+			bIsMySlot = (CachedPlayerInfoData == MyPC->PlayerState);
+		}
+	}
+	
+	SelectSwordShieldButton->SetIsEnabled(bIsMySlot);
+	SelectDualSwordButton->SetIsEnabled(bIsMySlot);
+	SelectLanceButton->SetIsEnabled(bIsMySlot);
+	SelectKatanaButton->SetIsEnabled(bIsMySlot);
+}
+
+UWidget* UPR_PlayerIfoEntryWidget::DownActionFocusWidget()
+{
+	if (UPR_CharacterSelect_Sub* ParentUI = GetTypedOuter<UPR_CharacterSelect_Sub>())
+	{
+		return  ParentUI->GetReadyOrStartButton();
+	}
+	return nullptr;
+}
+
+UWidget* UPR_PlayerIfoEntryWidget::UpActionFocusWidget()
+{
+	if (UPR_CharacterSelect_Sub* ParentUI = GetTypedOuter<UPR_CharacterSelect_Sub>())
+	{
+		return  ParentUI->GetOptionButton();
+	}
+	return nullptr;
 }

@@ -10,6 +10,8 @@
 class UCommonButtonBase;
 class UCommonActivatableWidget;
 class UCommonListView;
+class UPR_PlayerIfoEntryWidget;
+class UVerticalBox;
 
 UCLASS()
 class PROJECT_RAID_API UPR_CharacterSelect_Sub : public UCommonActivatableWidget
@@ -22,17 +24,29 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonButtonBase> ExitButton;
 	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonButtonBase> ReadyButton;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UCommonButtonBase> StartButton;
+	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UCommonActivatableWidget> GameOptionWidgetClass;
 	
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UCommonListView> PlayerInfoListView;
+	TObjectPtr<UVerticalBox> PlayerInfoList;
 	
 	UFUNCTION()
 	void ExitButtonClicked() const;
 	
 	UFUNCTION()
 	void OptionButtonClicked() const;
+	
+	UPROPERTY()
+	TArray<UPR_PlayerIfoEntryWidget*> ActiveEntryWidgets;
+	
+	UPROPERTY(EditAnywhere, Category = "UI", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UPR_PlayerIfoEntryWidget> EntryWidgetClass;
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -41,4 +55,7 @@ protected:
 public:
 	UFUNCTION()
 	void UpdatePlayerInfoList();
+	
+	UWidget* GetReadyOrStartButton();
+	UWidget* GetOptionButton();
 };

@@ -5,13 +5,13 @@
 
 #include "Kismet/KismetSystemLibrary.h"
 #include "CommonButtonBase.h"
-#include "CommonListView.h"
+#include "Components/VerticalBox.h"
 
 #include "GameInstance/PR_GameIntance.h"
 #include "Interface/PR_OptionUIInterface.h"
-#include "ListRow/PR_PlayerInfoDataRow.h"
 #include "GameState/PR_CharacterSelectGameState.h"
 #include "PlayerState/PR_CharacterSelectState.h"
+#include "UI/PR_PlayerIfoEntryWidget.h"
 
 #include "Utils/LogHelper.h"
 
@@ -47,6 +47,16 @@ void UPR_CharacterSelect_Sub::NativeConstruct()
 		GS->OnLobbyRefreshRequired.AddDynamic(this, &UPR_CharacterSelect_Sub::UpdatePlayerInfoList);
 	}
 	
+	for (int i = 0; i < 4; i++)
+	{
+		UPR_PlayerIfoEntryWidget* NewEntry = Cast<UPR_PlayerIfoEntryWidget>(CreateWidget<UUserWidget>(this, EntryWidgetClass));
+		if (!NewEntry) { return; }
+		
+		PlayerInfoList->AddChildToVerticalBox(NewEntry);
+		NewEntry->SetVisibility(ESlateVisibility::Collapsed);
+		
+		ActiveEntryWidgets.Add(NewEntry);
+	}
 	UpdatePlayerInfoList();
 }
 
@@ -59,13 +69,20 @@ void UPR_CharacterSelect_Sub::UpdatePlayerInfoList()
 {
 	bool bHasUninitializedPlayer = false;
 	
-	if (!PlayerInfoListView) { return; }
+	if (!PlayerInfoList) { return; }
 
 	APR_CharacterSelectGameState* GameState = Cast<APR_CharacterSelectGameState>(GetWorld()->GetGameState());
 	if (!GameState) { return; }
 	
-	TArray<UObject*> NewItems;
-
+	TArray<UWidget*> IntendedEntries = PlayerInfoList->GetAllChildren();
+	
+	for (UWidget* Entry : IntendedEntries)
+	{
+		Entry->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	
+	int32 CurrentPlayerIndex = 0;
+	
 	for (APlayerState* PS : GameState->PlayerArray)
 	{
 		if (!PS) { continue; }
@@ -79,27 +96,33 @@ void UPR_CharacterSelect_Sub::UpdatePlayerInfoList()
 			bHasUninitializedPlayer = true;
 			continue;
 		}
-
-		UPR_PlayerInfoDataRow* NewRow = NewObject<UPR_PlayerInfoDataRow>(this, UPR_PlayerInfoDataRow::StaticClass());
-		if (NewRow)
+		
+		if (IntendedEntries.IsValidIndex(CurrentPlayerIndex))
 		{
-			NewRow->PlayerName = PS->GetPlayerName();
-			NewRow->SelectCharacterType = SelectPS->GetCharacterType();
-			NewRow->OwningPlayerState = SelectPS;
-			NewItems.Add(NewRow);
+			if (UPR_PlayerIfoEntryWidget* TargetEntry = Cast<UPR_PlayerIfoEntryWidget>(IntendedEntries[CurrentPlayerIndex]))
+			{
+				TargetEntry->InitializeEntryData(SelectPS);
+				
+				TargetEntry->SetVisibility(ESlateVisibility::Visible);
+				CurrentPlayerIndex++;
+			}
+			
 		}
 	}
-	if (NewItems.Num() > 0)
-	{
-		PlayerInfoListView->ClearListItems();
-		for (UObject* Item : NewItems)
-		{
-			PlayerInfoListView->AddItem(Item);
-		}
-	}
+	
 	if (bHasUninitializedPlayer)
 	{
 		FTimerHandle RetryTimerHandle;
 		GetWorld()->GetTimerManager().SetTimer(RetryTimerHandle, this, &UPR_CharacterSelect_Sub::UpdatePlayerInfoList, 0.1f, false);
 	}
+}
+
+UWidget* UPR_CharacterSelect_Sub::GetReadyOrStartButton()
+{
+	return StartButton;
+}
+
+UWidget* UPR_CharacterSelect_Sub::GetOptionButton()
+{
+	return  OptionButton;
 }
