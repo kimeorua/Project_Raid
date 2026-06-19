@@ -19,6 +19,15 @@ void APR_CharacterSelectState::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(APR_CharacterSelectState, SelectedCharacter);
+	DOREPLIFETIME(APR_CharacterSelectState, bIsReady);
+}
+
+void APR_CharacterSelectState::Server_SetIsReady_Implementation(bool bNewReadyState)
+{
+	if (bIsReady == bNewReadyState) return;
+	bIsReady = bNewReadyState;
+	
+	OnRep_IsReady();
 }
 
 void APR_CharacterSelectState::Server_SetCharacterType_Implementation(ECharacterType NewType)
@@ -29,6 +38,14 @@ void APR_CharacterSelectState::Server_SetCharacterType_Implementation(ECharacter
 }
 
 void APR_CharacterSelectState::OnRep_CharacterType()
+{
+	if (APR_CharacterSelectGameState* GS = Cast<APR_CharacterSelectGameState>(GetWorld()->GetGameState()))
+	{
+		GS->OnLobbyRefreshRequired.Broadcast();
+	}
+}
+
+void APR_CharacterSelectState::OnRep_IsReady()
 {
 	if (APR_CharacterSelectGameState* GS = Cast<APR_CharacterSelectGameState>(GetWorld()->GetGameState()))
 	{

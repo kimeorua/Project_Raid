@@ -22,6 +22,7 @@ public:
 	UPR_CharacterSelect_Top* GetCharacterSelectUI() const;
 	
 	void RequestChangeCharacter(ECharacterType NewType);
+	void RequestChangeIsReady(bool NewIsReady);
 	
 protected:
 	virtual void BeginPlay() override;

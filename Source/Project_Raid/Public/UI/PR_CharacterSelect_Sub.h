@@ -12,6 +12,7 @@ class UCommonActivatableWidget;
 class UCommonListView;
 class UPR_PlayerIfoEntryWidget;
 class UVerticalBox;
+class APR_CharacterSelectGameState;
 
 UCLASS()
 class PROJECT_RAID_API UPR_CharacterSelect_Sub : public UCommonActivatableWidget
@@ -42,11 +43,20 @@ private:
 	UFUNCTION()
 	void OptionButtonClicked() const;
 	
+	UFUNCTION()
+	void OnReadyButtonClicked();
+	
 	UPROPERTY()
 	TArray<UPR_PlayerIfoEntryWidget*> ActiveEntryWidgets;
 	
 	UPROPERTY(EditAnywhere, Category = "UI", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UPR_PlayerIfoEntryWidget> EntryWidgetClass;
+
+	void InitEntryWidgets();
+	
+	void InitGameStartOrReadyButton();
+	
+	void CheckReadyAndStartConditions(APR_CharacterSelectGameState* GameState);
 	
 protected:
 	virtual void NativeConstruct() override;

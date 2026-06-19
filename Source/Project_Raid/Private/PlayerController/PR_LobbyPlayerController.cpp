@@ -26,6 +26,14 @@ void APR_LobbyPlayerController::RequestChangeCharacter(ECharacterType NewType)
 	}
 }
 
+void APR_LobbyPlayerController::RequestChangeIsReady(bool NewIsReady)
+{
+	if (APR_CharacterSelectState* PR_PS = GetPlayerState<APR_CharacterSelectState>())
+	{
+		PR_PS->Server_SetIsReady(NewIsReady);
+	}
+}
+
 void APR_LobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

@@ -83,7 +83,7 @@ void UPR_PlayerIfoEntryWidget::NativeConstruct()
 	SelectKatanaButton->OnClicked().AddUObject(this, &UPR_PlayerIfoEntryWidget::OnKatanaButtonClicked);
 }
 
-void UPR_PlayerIfoEntryWidget::InitializeEntryData(APR_CharacterSelectState* InData)
+void UPR_PlayerIfoEntryWidget::InitializeEntryData(APR_CharacterSelectState* InData, bool bIsHost)
 {
 	if (!InData) { return; }
 	
@@ -104,10 +104,25 @@ void UPR_PlayerIfoEntryWidget::InitializeEntryData(APR_CharacterSelectState* InD
 		}
 	}
 	
-	SelectSwordShieldButton->SetIsEnabled(bIsMySlot);
-	SelectDualSwordButton->SetIsEnabled(bIsMySlot);
-	SelectLanceButton->SetIsEnabled(bIsMySlot);
-	SelectKatanaButton->SetIsEnabled(bIsMySlot);
+	bool bIsReady = CachedPlayerInfoData->IsReady();
+	FLinearColor Color = bIsReady ? FLinearColor::White : FLinearColor::Black;
+	ReadyIcon->SetColorAndOpacity(Color);
+	
+	if (bIsHost)
+	{
+		ReadyIcon->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		ReadyIcon->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+	
+	bool bShouldEnableButtons = bIsMySlot && !bIsReady;
+	
+	SelectSwordShieldButton->SetIsEnabled(bShouldEnableButtons);
+	SelectDualSwordButton->SetIsEnabled(bShouldEnableButtons);
+	SelectLanceButton->SetIsEnabled(bShouldEnableButtons);
+	SelectKatanaButton->SetIsEnabled(bShouldEnableButtons);
 }
 
 UWidget* UPR_PlayerIfoEntryWidget::DownActionFocusWidget()

@@ -38,6 +38,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> SelectedWeaponIcon;
 	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> ReadyIcon;
+	
 	UPROPERTY()
 	TObjectPtr<APR_CharacterSelectState> CachedPlayerInfoData;
 	
@@ -74,7 +77,7 @@ protected:
 	virtual void NativeConstruct() override;
 	
 public:
-	void InitializeEntryData(APR_CharacterSelectState* Data);
+	void InitializeEntryData(APR_CharacterSelectState* Data, bool bIsHost);
 	
 	UFUNCTION(BlueprintPure)
 	UWidget* DownActionFocusWidget();

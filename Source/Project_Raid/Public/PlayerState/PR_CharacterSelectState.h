@@ -20,11 +20,22 @@ public:
 	void Server_SetCharacterType(ECharacterType NewType);
 	
 	FORCEINLINE ECharacterType GetCharacterType() const { return SelectedCharacter;}
+	
+	UFUNCTION(Server, Reliable)
+	void Server_SetIsReady(bool bNewReadyState);
+	
+	FORCEINLINE bool IsReady() const { return bIsReady;}
 
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_CharacterType)
 	ECharacterType SelectedCharacter;
 	
+	UPROPERTY(ReplicatedUsing = OnRep_IsReady)
+	bool bIsReady = false;
+	
 	UFUNCTION() 
 	void OnRep_CharacterType();
+	
+	UFUNCTION() 
+	void OnRep_IsReady();
 };
