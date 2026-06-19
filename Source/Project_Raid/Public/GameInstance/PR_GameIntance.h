@@ -34,6 +34,8 @@ public:
 	bool CheckSkipLogin() { return bShouldSkipLoginAndGoToLobby; }
 	void ResetSkipLogin() { bShouldSkipLoginAndGoToLobby = false; }
 	
+	void HideSessionOnMatchStart();
+	
 private:
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineIdentityPtr IdentityPtr;

@@ -112,10 +112,8 @@ void UPR_GameIntance::CreateSession(const FString& RoomName)
 	OnlineSessionSettings.NumPublicConnections = 4;
 	
 	OnlineSessionSettings.Set(FName("LobbyName"), RoomName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-	
+	OnlineSessionSettings.Set(FName("IsMatchStarted"), FString("False"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	SessionPtr->CreateSession(0, NAME_GameSession, OnlineSessionSettings);
-	
-	//LogHelper::LogPrint(TEXT("CreateSession"));
 }
 
 void UPR_GameIntance::OnCreateSessionCompleted(FName SessionName, bool bWasSuccessful)
@@ -158,6 +156,7 @@ void UPR_GameIntance::FindSessions()
 	
 	SessionSearchSettings->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
 	SessionSearchSettings->QuerySettings.Set(FName("LobbyName"), FString(""), EOnlineComparisonOp::NotEquals);
+	SessionSearchSettings->QuerySettings.Set(FName("IsMatchStarted"), FString("False"), EOnlineComparisonOp::Equals);
 	
 	SessionPtr->FindSessions(0, SessionSearchSettings.ToSharedRef());
 }
@@ -166,6 +165,23 @@ void UPR_GameIntance::JoinSelectedSession(const FOnlineSessionSearchResult& Targ
 {
 	if (!SessionPtr.IsValid()) { return; }
 	SessionPtr->JoinSession(0, NAME_GameSession, TargetSession);
+}
+
+void UPR_GameIntance::HideSessionOnMatchStart()
+{
+	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+	if (!Subsystem) return;
+
+	IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+	if (!SessionInterface.IsValid()) return;
+    
+	FOnlineSessionSettings* CurrentSettings = SessionInterface->GetSessionSettings(NAME_GameSession);
+    
+	if (CurrentSettings)
+	{
+		CurrentSettings->Set(FName("IsMatchStarted"), FString("True"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+		SessionInterface->UpdateSession(NAME_GameSession, *CurrentSettings, true);
+	}
 }
 
 void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error)
