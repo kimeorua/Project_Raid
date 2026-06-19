@@ -54,6 +54,7 @@ void UPR_GameIntance::Login()
 void UPR_GameIntance::Init()
 {
 	Super::Init();
+	GEngine->OnNetworkFailure().AddUObject(this, &UPR_GameIntance::HandleNetworkFailure);
 	
 	OnlineSubsystem = IOnlineSubsystem::Get();
 	if (OnlineSubsystem)
@@ -214,4 +215,9 @@ void UPR_GameIntance::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCo
 		}
 	}
 	else {return;}
+}
+
+void UPR_GameIntance::HandleNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString)
+{
+	bShouldSkipLoginAndGoToLobby = true;
 }

@@ -4,9 +4,12 @@
 #include "PlayerController/PR_LobbyPlayerController.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Engine/Engine.h"
+#include "GameState/PR_CharacterSelectGameState.h"
 
 #include "UI/PR_CharacterSelect_Top.h"
 #include "PlayerState/PR_CharacterSelectState.h"
+
+#include "Utils/LogHelper.h"
 
 void APR_LobbyPlayerController::RequestOptionPopup(TSubclassOf<UCommonActivatableWidget> OptionClass)
 {
@@ -32,6 +35,27 @@ void APR_LobbyPlayerController::RequestChangeIsReady(bool NewIsReady)
 	{
 		PR_PS->Server_SetIsReady(NewIsReady);
 	}
+}
+
+void APR_LobbyPlayerController::Server_RequestStartGame_Implementation()
+{
+	if (APR_CharacterSelectGameState* GS = Cast<APR_CharacterSelectGameState>(GetWorld()->GetGameState()))
+	{
+		if (!GameLevel.IsValid())
+		{
+			GameLevel.LoadSynchronous();
+		}
+		
+		if (!GameLevel) { return; }
+		
+		const FName LevelName = *FPackageName::ObjectPathToPackageName(GameLevel.ToString());
+		GS->StartGame(LevelName.ToString());
+	}
+}
+
+bool APR_LobbyPlayerController::Server_RequestStartGame_Validate()
+{
+	return true;
 }
 
 void APR_LobbyPlayerController::BeginPlay()

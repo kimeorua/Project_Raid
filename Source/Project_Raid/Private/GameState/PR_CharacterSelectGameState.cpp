@@ -7,6 +7,7 @@
 #include "PlayerController/PR_LobbyPlayerController.h"
 #include "UI/PR_CharacterSelect_Top.h"
 #include "UI/PR_CharacterSelect_Sub.h"
+#include "GameMode/PR_CharacterSelectGameMode.h"
 
 #include "Utils/LogHelper.h"
 
@@ -33,4 +34,22 @@ void APR_CharacterSelectGameState::AddPlayerState(APlayerState* PlayerState)
 void APR_CharacterSelectGameState::RemovePlayerState(APlayerState* PlayerState)
 {
 	Super::RemovePlayerState(PlayerState);
+}
+
+void APR_CharacterSelectGameState::StartGame(const FString& GameLV_Name)
+{
+	if (!HasAuthority()) return;
+	
+	if (UWorld* World = GetWorld())
+	{
+		if (AGameModeBase* GM = World->GetAuthGameMode())
+		{
+			GM->bUseSeamlessTravel = true;
+			if (APR_CharacterSelectGameMode* PR_GM = Cast<APR_CharacterSelectGameMode>(GM))
+			{
+				PR_GM->LockLobby();
+			}
+		}
+		World->ServerTravel(GameLV_Name); 
+	}
 }

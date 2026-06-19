@@ -19,6 +19,7 @@ public class Project_Raid : ModuleRules
 			"OnlineSubsystemEOS", 
 			"OnlineSubsystemUtils",
 			"OnlineSubsystem",
+			"NetCore",
 			
 			"UMG",
 			"CommonUI",

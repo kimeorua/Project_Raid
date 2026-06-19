@@ -31,6 +31,9 @@ public:
 	void FindSessions();
 	void JoinSelectedSession(const FOnlineSessionSearchResult& TargetSession);
 	
+	bool CheckSkipLogin() { return bShouldSkipLoginAndGoToLobby; }
+	void ResetSkipLogin() { bShouldSkipLoginAndGoToLobby = false; }
+	
 private:
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineIdentityPtr IdentityPtr;
@@ -49,4 +52,9 @@ private:
 	void OnFindSessionsCompleted(bool bWasSuccessful);
 	
 	void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+	
+	bool bShouldSkipLoginAndGoToLobby = false;
+	
+	UFUNCTION()
+	void HandleNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString);
 };

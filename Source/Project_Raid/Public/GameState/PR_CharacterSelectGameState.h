@@ -18,4 +18,6 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category = "PR|Delegates")
 	FOnLobbyRefreshRequired OnLobbyRefreshRequired;
+	
+	void StartGame(const FString& GameLV_Name);
 };

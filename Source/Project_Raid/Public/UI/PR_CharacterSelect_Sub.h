@@ -46,6 +46,9 @@ private:
 	UFUNCTION()
 	void OnReadyButtonClicked();
 	
+	UFUNCTION()
+	void OnStartButtonClicked();
+	
 	UPROPERTY()
 	TArray<UPR_PlayerIfoEntryWidget*> ActiveEntryWidgets;
 	

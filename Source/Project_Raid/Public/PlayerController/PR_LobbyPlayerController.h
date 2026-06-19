@@ -23,6 +23,9 @@ public:
 	
 	void RequestChangeCharacter(ECharacterType NewType);
 	void RequestChangeIsReady(bool NewIsReady);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_RequestStartGame();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -33,4 +36,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "UI Class", meta = (AllowPrivateAccess))
 	TSubclassOf<UPR_CharacterSelect_Top> CharacterSelectClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI Class", meta = (AllowPrivateAccess))
+	TSoftObjectPtr<UWorld>GameLevel;
 };

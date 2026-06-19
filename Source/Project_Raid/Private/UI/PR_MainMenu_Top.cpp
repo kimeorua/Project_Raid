@@ -7,6 +7,7 @@
 #include "UI/PR_MainMenu_Sub.h"
 #include "Subsystem/PR_LocalPlayerSubsystem_Option.h"
 #include "UI/PR_LobbyMenu_Sub.h"
+#include "GameInstance/PR_GameIntance.h"
 
 void UPR_MainMenu_Top::PopUpLobbyUI() const
 {
@@ -32,7 +33,27 @@ void UPR_MainMenu_Top::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	MenuStack->AddWidget<UPR_MainMenu_Sub>(GameMainMenuWidgetClass);
+	UPR_GameIntance* GI = Cast<UPR_GameIntance>(GetGameInstance());
+	
+	if (GI && GI->CheckSkipLogin())
+	{
+		GI->ResetSkipLogin();
+		
+		if (IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get())
+		{
+			IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+			if (SessionInterface.IsValid())
+			{
+				SessionInterface->DestroySession(NAME_GameSession);
+			}
+		}
+		
+		PopUpLobbyUI();
+	}
+	else
+	{
+		MenuStack->AddWidget<UPR_MainMenu_Sub>(GameMainMenuWidgetClass);
+	}
 	
 	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
 	UPR_LocalPlayerSubsystem_Option* LocalPlayerSubsystem_Option = LocalPlayer->GetSubsystem<UPR_LocalPlayerSubsystem_Option>();

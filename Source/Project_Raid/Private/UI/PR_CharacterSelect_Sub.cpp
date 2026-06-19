@@ -48,6 +48,17 @@ void UPR_CharacterSelect_Sub::OnReadyButtonClicked()
 	}
 }
 
+void UPR_CharacterSelect_Sub::OnStartButtonClicked()
+{
+	APlayerController* PC = GetOwningPlayer();
+	if (!PC) return;
+	
+	if (APR_LobbyPlayerController* LobbyPC = Cast<APR_LobbyPlayerController>(PC))
+	{
+		LobbyPC->Server_RequestStartGame();
+	}
+}
+
 void UPR_CharacterSelect_Sub::InitEntryWidgets()
 {
 	for (int i = 0; i < 4; i++)
@@ -134,6 +145,7 @@ void UPR_CharacterSelect_Sub::NativeConstruct()
 	ExitButton->OnClicked().AddUObject(this, &UPR_CharacterSelect_Sub::ExitButtonClicked);
 	OptionButton->OnClicked().AddUObject(this, &UPR_CharacterSelect_Sub::OptionButtonClicked);
 	ReadyButton->OnClicked().AddUObject(this, &UPR_CharacterSelect_Sub::OnReadyButtonClicked);
+	StartButton->OnClicked().AddUObject(this, &UPR_CharacterSelect_Sub::OnStartButtonClicked);
 	
 	SetDesiredFocusWidget(NativeGetDesiredFocusTarget());
 	
