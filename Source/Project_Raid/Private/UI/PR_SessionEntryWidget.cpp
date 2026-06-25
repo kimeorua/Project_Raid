@@ -6,7 +6,7 @@
 #include "CommonTextBlock.h"
 #include "CommonButtonBase.h"
 
-#include "GameInstance/PR_GameIntance.h"
+#include "GameInstance/PR_GameInstance.h"
 
 void UPR_SessionEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -31,7 +31,7 @@ void UPR_SessionEntryWidget::NativeConstruct()
 void UPR_SessionEntryWidget::OnJoinButtonClicked()
 {
 	if (!CachedSessionData) { return; }
-	UPR_GameIntance* GI = Cast<UPR_GameIntance>(GetGameInstance());
+	UPR_GameInstance* GI = Cast<UPR_GameInstance>(GetGameInstance());
 	if (!GI) { return; }
 	
 	GI->JoinSelectedSession(CachedSessionData->SearchResult);

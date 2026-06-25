@@ -7,7 +7,7 @@
 #include "PR_LobbyMenu_Sub.generated.h"
 
 class UCommonButtonBase;
-class UPR_GameIntance;
+class UPR_GameInstance;
 class UCommonActivatableWidgetStack;
 class UCommonListView;
 class FOnlineSessionSettings;
@@ -36,7 +36,7 @@ private:
 	TObjectPtr<UCommonListView> LobbyListView;
 	
 	UPROPERTY()
-	TObjectPtr<UPR_GameIntance> GameInstance;
+	TObjectPtr<UPR_GameInstance> GameInstance;
 	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UCommonActivatableWidget> GameOptionWidgetClass;

@@ -13,7 +13,7 @@ class UCommonButtonBase;
 class UImage;
 class UTexture2D;
 class APR_LobbyPlayerController;
-class APR_CharacterSelectState;
+class APR_PlayerState;
 
 UCLASS()
 class PROJECT_RAID_API UPR_PlayerIfoEntryWidget : public UCommonUserWidget
@@ -42,7 +42,7 @@ private:
 	TObjectPtr<UImage> ReadyIcon;
 	
 	UPROPERTY()
-	TObjectPtr<APR_CharacterSelectState> CachedPlayerInfoData;
+	TObjectPtr<APR_PlayerState> CachedPlayerInfoData;
 	
 	UPROPERTY()
 	TObjectPtr<APR_LobbyPlayerController> CachedPlayerController;
@@ -59,7 +59,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Icons")
 	TObjectPtr<UTexture2D> KatanaIcon;
 	
-	void SetWeaponIcon(ECharacterType Type);
+	void SetWeaponIcon(EWeaponType Type);
 	
 	UFUNCTION()
 	void OnSwordShieldButtonClicked();
@@ -77,7 +77,7 @@ protected:
 	virtual void NativeConstruct() override;
 	
 public:
-	void InitializeEntryData(APR_CharacterSelectState* Data, bool bIsHost);
+	void InitializeEntryData(APR_PlayerState* Data, bool bIsHost);
 	
 	UFUNCTION(BlueprintPure)
 	UWidget* DownActionFocusWidget();

@@ -7,7 +7,7 @@
 #include "Widgets/CommonActivatableWidgetContainer.h"
 #include "CommonListView.h"
 
-#include "GameInstance/PR_GameIntance.h"
+#include "GameInstance/PR_GameInstance.h"
 #include "Interface/PR_OptionUIInterface.h"
 #include "UI/PR_CreateSessionPopUp.h"
 #include "ListRow/PR_SessionDataRow.h"
@@ -50,7 +50,7 @@ void UPR_LobbyMenu_Sub::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	GameInstance = GetGameInstance<UPR_GameIntance>();
+	GameInstance = GetGameInstance<UPR_GameInstance>();
 	
 	CreateSessionButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::CreateSessionButtonClicked);
 	ExitButton->OnClicked().AddUObject(this, &UPR_LobbyMenu_Sub::ExitButtonClicked);

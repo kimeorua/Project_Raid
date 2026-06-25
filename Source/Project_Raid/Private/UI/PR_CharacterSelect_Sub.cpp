@@ -7,10 +7,10 @@
 #include "CommonButtonBase.h"
 #include "Components/VerticalBox.h"
 
-#include "GameInstance/PR_GameIntance.h"
+#include "GameInstance/PR_GameInstance.h"
 #include "Interface/PR_OptionUIInterface.h"
 #include "GameState/PR_CharacterSelectGameState.h"
-#include "PlayerState/PR_CharacterSelectState.h"
+#include "PlayerState/PR_PlayerState.h"
 #include "UI/PR_PlayerIfoEntryWidget.h"
 #include "PlayerController/PR_LobbyPlayerController.h"
 
@@ -18,7 +18,7 @@
 
 void UPR_CharacterSelect_Sub::ExitButtonClicked() const
 {
-	UPR_GameIntance* GameInstance = GetGameInstance<UPR_GameIntance>();
+	UPR_GameInstance* GameInstance = GetGameInstance<UPR_GameInstance>();
 	if (!GameInstance ) { return; }
 	UKismetSystemLibrary::QuitGame(GetWorld(), GameInstance->GetFirstLocalPlayerController(), EQuitPreference::Quit, false);
 }
@@ -38,7 +38,7 @@ void UPR_CharacterSelect_Sub::OnReadyButtonClicked()
 	APlayerController* PC = GetOwningPlayer();
 	if (!PC) return;
 	
-	if (APR_CharacterSelectState* MyPS = PC->GetPlayerState<APR_CharacterSelectState>())
+	if (APR_PlayerState* MyPS = PC->GetPlayerState<APR_PlayerState>())
 	{
 		bool bCurrentReadyState = MyPS->IsReady();
 		if (APR_LobbyPlayerController* LobbyPC = Cast<APR_LobbyPlayerController>(PC))
@@ -105,7 +105,7 @@ void UPR_CharacterSelect_Sub::CheckReadyAndStartConditions(APR_CharacterSelectGa
 	{
 		if (!PS) continue;
         
-		APR_CharacterSelectState* SelectPS = Cast<APR_CharacterSelectState>(PS);
+		APR_PlayerState* SelectPS = Cast<APR_PlayerState>(PS);
 		if (!SelectPS) continue;
 		
 		if (SelectPS->GetPlayerName().IsEmpty() || SelectPS->GetPlayerName().Equals(TEXT("Player"), ESearchCase::IgnoreCase))
@@ -115,7 +115,7 @@ void UPR_CharacterSelect_Sub::CheckReadyAndStartConditions(APR_CharacterSelectGa
 
 		if (SelectPS == MyPC->PlayerState)
 		{
-			bDidISelectWeapon = (SelectPS->GetCharacterType() != ECharacterType::None);
+			bDidISelectWeapon = (SelectPS->GetWeaponType() != EWeaponType::None);
 		}
 		else
 		{
@@ -186,7 +186,7 @@ void UPR_CharacterSelect_Sub::UpdatePlayerInfoList()
 	{
 		if (!PS) { continue; }
 		
-		APR_CharacterSelectState* SelectPS = Cast<APR_CharacterSelectState>(PS);
+		APR_PlayerState* SelectPS = Cast<APR_PlayerState>(PS);
 		
 		if (!SelectPS) { return; }
 		

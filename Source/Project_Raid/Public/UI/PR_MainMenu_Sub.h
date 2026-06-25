@@ -8,7 +8,7 @@
 
 
 class UCommonButtonBase;
-class UPR_GameIntance;
+class UPR_GameInstance;
 
 UCLASS()
 class PROJECT_RAID_API UPR_MainMenu_Sub : public UCommonActivatableWidget
@@ -25,7 +25,7 @@ private:
 	TObjectPtr<UCommonButtonBase> ExitButton;
 	
 	UPROPERTY()
-	TObjectPtr<UPR_GameIntance> GameInstance;
+	TObjectPtr<UPR_GameInstance> GameInstance;
 	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess=true))
 	TSubclassOf<UCommonActivatableWidget> GameOptionWidgetClass;

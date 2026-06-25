@@ -6,7 +6,7 @@
 #include "PR_Enums.generated.h"
 
 UENUM(BlueprintType)
-enum class ECharacterType : uint8
+enum class EWeaponType : uint8
 {
 	None,
 	SwordShield,

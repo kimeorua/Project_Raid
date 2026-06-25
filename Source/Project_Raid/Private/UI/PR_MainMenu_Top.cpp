@@ -7,7 +7,7 @@
 #include "UI/PR_MainMenu_Sub.h"
 #include "Subsystem/PR_LocalPlayerSubsystem_Option.h"
 #include "UI/PR_LobbyMenu_Sub.h"
-#include "GameInstance/PR_GameIntance.h"
+#include "GameInstance/PR_GameInstance.h"
 
 void UPR_MainMenu_Top::PopUpLobbyUI() const
 {
@@ -33,7 +33,7 @@ void UPR_MainMenu_Top::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	UPR_GameIntance* GI = Cast<UPR_GameIntance>(GetGameInstance());
+	UPR_GameInstance* GI = Cast<UPR_GameInstance>(GetGameInstance());
 	
 	if (GI && GI->CheckSkipLogin())
 	{

@@ -4,7 +4,7 @@
 #include "UI/PR_MainMenu_Sub.h"
 #include "CommonButtonBase.h"
 
-#include "GameInstance/PR_GameIntance.h"
+#include "GameInstance/PR_GameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Interface/PR_OptionUIInterface.h"
 
@@ -34,7 +34,7 @@ void UPR_MainMenu_Sub::OptionButtonClicked() const
 void UPR_MainMenu_Sub::NativeConstruct()
 {
 	Super::NativeConstruct();
-	GameInstance = GetGameInstance<UPR_GameIntance>();
+	GameInstance = GetGameInstance<UPR_GameInstance>();
 	
 	LoginButton->OnClicked().AddUObject(this, &UPR_MainMenu_Sub::LoginButtonClicked);
 	ExitButton->OnClicked().AddUObject(this, &UPR_MainMenu_Sub::ExitButtonClicked);

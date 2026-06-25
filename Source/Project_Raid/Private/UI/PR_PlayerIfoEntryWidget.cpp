@@ -9,30 +9,30 @@
 
 #include "PlayerController/PR_LobbyPlayerController.h"
 #include "UI/PR_CharacterSelect_Sub.h"
-#include "PlayerState/PR_CharacterSelectState.h"
+#include "PlayerState/PR_PlayerState.h"
 
 #include "Utils/LogHelper.h"
 
-void UPR_PlayerIfoEntryWidget::SetWeaponIcon(ECharacterType Type)
+void UPR_PlayerIfoEntryWidget::SetWeaponIcon(EWeaponType Type)
 {
 	switch (Type)
 	{
-	case ECharacterType::None :
+	case EWeaponType::None :
 		SelectedWeaponIcon->SetBrushFromTexture(nullptr);
 		break;
-	case ECharacterType::SwordShield :
+	case EWeaponType::SwordShield :
 		if (!SwordShieldIcon) { return; }
 		SelectedWeaponIcon->SetBrushFromTexture(SwordShieldIcon);
 		break;
-	case ECharacterType::DualSword :
+	case EWeaponType::DualSword :
 		if (!DualSwordIcon) { return; }
 		SelectedWeaponIcon->SetBrushFromTexture(DualSwordIcon);
 		break;
-	case ECharacterType::Lance :
+	case EWeaponType::Lance :
 		if (!LanceIcon) { return; }
 		SelectedWeaponIcon->SetBrushFromTexture(LanceIcon);
 		break;
-	case ECharacterType::Katana :
+	case EWeaponType::Katana :
 		if (!KatanaIcon) { return; }
 		SelectedWeaponIcon->SetBrushFromTexture(KatanaIcon);
 		break;
@@ -43,32 +43,32 @@ void UPR_PlayerIfoEntryWidget::OnSwordShieldButtonClicked()
 {
 	if (!CachedPlayerController) { return; }
 	
-	CachedPlayerController->RequestChangeCharacter(ECharacterType::SwordShield);
-	SetWeaponIcon(ECharacterType::SwordShield);
+	CachedPlayerController->RequestChangeCharacter(EWeaponType::SwordShield);
+	SetWeaponIcon(EWeaponType::SwordShield);
 }
 
 void UPR_PlayerIfoEntryWidget::OnDualSwordButtonClicked()
 {
 	if (!CachedPlayerController) { return; }
 	
-	CachedPlayerController->RequestChangeCharacter(ECharacterType::DualSword);
-	SetWeaponIcon(ECharacterType::DualSword);
+	CachedPlayerController->RequestChangeCharacter(EWeaponType::DualSword);
+	SetWeaponIcon(EWeaponType::DualSword);
 }
 
 void UPR_PlayerIfoEntryWidget::OnLanceButtonClicked()
 {
 	if (!CachedPlayerController) { return; }
 	
-	CachedPlayerController->RequestChangeCharacter(ECharacterType::Lance);
-	SetWeaponIcon(ECharacterType::Lance);
+	CachedPlayerController->RequestChangeCharacter(EWeaponType::Lance);
+	SetWeaponIcon(EWeaponType::Lance);
 }
 
 void UPR_PlayerIfoEntryWidget::OnKatanaButtonClicked()
 {
 	if (!CachedPlayerController) { return; }
 	
-	CachedPlayerController->RequestChangeCharacter(ECharacterType::Katana);
-	SetWeaponIcon(ECharacterType::Katana);
+	CachedPlayerController->RequestChangeCharacter(EWeaponType::Katana);
+	SetWeaponIcon(EWeaponType::Katana);
 }
 
 void UPR_PlayerIfoEntryWidget::NativeConstruct()
@@ -83,14 +83,14 @@ void UPR_PlayerIfoEntryWidget::NativeConstruct()
 	SelectKatanaButton->OnClicked().AddUObject(this, &UPR_PlayerIfoEntryWidget::OnKatanaButtonClicked);
 }
 
-void UPR_PlayerIfoEntryWidget::InitializeEntryData(APR_CharacterSelectState* InData, bool bIsHost)
+void UPR_PlayerIfoEntryWidget::InitializeEntryData(APR_PlayerState* InData, bool bIsHost)
 {
 	if (!InData) { return; }
 	
 	CachedPlayerInfoData = InData;
 	
 	PlayerName->SetText(FText::FromString(CachedPlayerInfoData->GetPlayerName()));
-	SetWeaponIcon(CachedPlayerInfoData->GetCharacterType());
+	SetWeaponIcon(CachedPlayerInfoData->GetWeaponType());
 	
 	bool bIsMySlot = false;
 	

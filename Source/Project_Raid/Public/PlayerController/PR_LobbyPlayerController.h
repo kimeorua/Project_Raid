@@ -21,7 +21,7 @@ public:
 	
 	UPR_CharacterSelect_Top* GetCharacterSelectUI() const;
 	
-	void RequestChangeCharacter(ECharacterType NewType);
+	void RequestChangeCharacter(EWeaponType NewType);
 	void RequestChangeIsReady(bool NewIsReady);
 
 	UFUNCTION(Server, Reliable, WithValidation)

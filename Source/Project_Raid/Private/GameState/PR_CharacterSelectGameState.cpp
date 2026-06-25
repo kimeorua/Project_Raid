@@ -8,7 +8,7 @@
 #include "UI/PR_CharacterSelect_Top.h"
 #include "UI/PR_CharacterSelect_Sub.h"
 #include "GameMode/PR_CharacterSelectGameMode.h"
-#include "GameInstance/PR_GameIntance.h"
+#include "GameInstance/PR_GameInstance.h"
 
 
 #include "Utils/LogHelper.h"
@@ -42,7 +42,7 @@ void APR_CharacterSelectGameState::StartGame(const FString& GameLV_Name)
 {
 	if (!HasAuthority()) return;
 	
-	if (UPR_GameIntance* GI = Cast<UPR_GameIntance>(GetGameInstance()))
+	if (UPR_GameInstance* GI = Cast<UPR_GameInstance>(GetGameInstance()))
 	{
 		GI->HideSessionOnMatchStart();
 	}
@@ -51,7 +51,6 @@ void APR_CharacterSelectGameState::StartGame(const FString& GameLV_Name)
 	{
 		if (AGameModeBase* GM = World->GetAuthGameMode())
 		{
-			
 			GM->bUseSeamlessTravel = true;
 			if (APR_CharacterSelectGameMode* PR_GM = Cast<APR_CharacterSelectGameMode>(GM))
 			{

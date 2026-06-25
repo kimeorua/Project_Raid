@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameInstance/PR_GameIntance.h"
+#include "GameInstance/PR_GameInstance.h"
 
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "OnlineSubsystem.h"
@@ -15,7 +15,7 @@
 
 #include "Utils/LogHelper.h"
 
-void UPR_GameIntance::Login()
+void UPR_GameInstance::Login()
 {
 	FOnlineAccountCredentials OnlineAccountCredentials;
 #if WITH_EDITOR
@@ -51,10 +51,10 @@ void UPR_GameIntance::Login()
 	IdentityPtr->Login(0, OnlineAccountCredentials);
 }
 
-void UPR_GameIntance::Init()
+void UPR_GameInstance::Init()
 {
 	Super::Init();
-	GEngine->OnNetworkFailure().AddUObject(this, &UPR_GameIntance::HandleNetworkFailure);
+	GEngine->OnNetworkFailure().AddUObject(this, &UPR_GameInstance::HandleNetworkFailure);
 	
 	OnlineSubsystem = IOnlineSubsystem::Get();
 	if (OnlineSubsystem)
@@ -63,7 +63,7 @@ void UPR_GameIntance::Init()
 		
 		if (IdentityPtr.IsValid())
 		{
-			LoginDelegateHandle = IdentityPtr->OnLoginCompleteDelegates->AddUObject(this, &UPR_GameIntance::LoginComleted);
+			LoginDelegateHandle = IdentityPtr->OnLoginCompleteDelegates->AddUObject(this, &UPR_GameInstance::LoginComleted);
 		}
 	}
 	
@@ -71,13 +71,13 @@ void UPR_GameIntance::Init()
 	
 	if (SessionPtr.IsValid())
 	{
-		FindSessionsDelegateHandle = SessionPtr->OnFindSessionsCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnFindSessionsCompleted);
-		SessionPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnCreateSessionCompleted);
-		SessionPtr->OnJoinSessionCompleteDelegates.AddUObject(this, &UPR_GameIntance::OnJoinSessionCompleted);
+		FindSessionsDelegateHandle = SessionPtr->OnFindSessionsCompleteDelegates.AddUObject(this, &UPR_GameInstance::OnFindSessionsCompleted);
+		SessionPtr->OnCreateSessionCompleteDelegates.AddUObject(this, &UPR_GameInstance::OnCreateSessionCompleted);
+		SessionPtr->OnJoinSessionCompleteDelegates.AddUObject(this, &UPR_GameInstance::OnJoinSessionCompleted);
 	}
 }
 
-void UPR_GameIntance::Shutdown()
+void UPR_GameInstance::Shutdown()
 {
 	if (IdentityPtr.IsValid() && LoginDelegateHandle.IsValid())
 	{
@@ -95,7 +95,7 @@ void UPR_GameIntance::Shutdown()
 	Super::Shutdown();
 }
 
-void UPR_GameIntance::CreateSession(const FString& RoomName)
+void UPR_GameInstance::CreateSession(const FString& RoomName)
 {
 	if (!SessionPtr) {return;}
 	
@@ -116,7 +116,7 @@ void UPR_GameIntance::CreateSession(const FString& RoomName)
 	SessionPtr->CreateSession(0, NAME_GameSession, OnlineSessionSettings);
 }
 
-void UPR_GameIntance::OnCreateSessionCompleted(FName SessionName, bool bWasSuccessful)
+void UPR_GameInstance::OnCreateSessionCompleted(FName SessionName, bool bWasSuccessful)
 {
 	if (bWasSuccessful)
 	{
@@ -145,7 +145,7 @@ void UPR_GameIntance::OnCreateSessionCompleted(FName SessionName, bool bWasSucce
 	}
 }
 
-void UPR_GameIntance::FindSessions()
+void UPR_GameInstance::FindSessions()
 {
 	if (!SessionPtr.IsValid()) return;
 	
@@ -161,13 +161,13 @@ void UPR_GameIntance::FindSessions()
 	SessionPtr->FindSessions(0, SessionSearchSettings.ToSharedRef());
 }
 
-void UPR_GameIntance::JoinSelectedSession(const FOnlineSessionSearchResult& TargetSession)
+void UPR_GameInstance::JoinSelectedSession(const FOnlineSessionSearchResult& TargetSession)
 {
 	if (!SessionPtr.IsValid()) { return; }
 	SessionPtr->JoinSession(0, NAME_GameSession, TargetSession);
 }
 
-void UPR_GameIntance::HideSessionOnMatchStart()
+void UPR_GameInstance::HideSessionOnMatchStart()
 {
 	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
 	if (!Subsystem) return;
@@ -184,7 +184,7 @@ void UPR_GameIntance::HideSessionOnMatchStart()
 	}
 }
 
-void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error)
+void UPR_GameInstance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUniqueNetId& UserID, const FString& Error)
 {
 	if (bSuccessful)
 	{
@@ -199,7 +199,7 @@ void UPR_GameIntance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FUn
 	}
 }
 
-void UPR_GameIntance::OnFindSessionsCompleted(bool bWasSuccessful)
+void UPR_GameInstance::OnFindSessionsCompleted(bool bWasSuccessful)
 {
 	if (APR_MainMenuController* PC = Cast<APR_MainMenuController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
 	{
@@ -216,7 +216,7 @@ void UPR_GameIntance::OnFindSessionsCompleted(bool bWasSuccessful)
 	}
 }
 
-void UPR_GameIntance::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+void UPR_GameInstance::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
 	if (Result == EOnJoinSessionCompleteResult::Success)
 	{
@@ -233,7 +233,7 @@ void UPR_GameIntance::OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCo
 	else {return;}
 }
 
-void UPR_GameIntance::HandleNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString)
+void UPR_GameInstance::HandleNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString)
 {
 	bShouldSkipLoginAndGoToLobby = true;
 }

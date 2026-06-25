@@ -4,7 +4,7 @@
 #include "UI/PR_CreateSessionPopUp.h"
 #include "CommonButtonBase.h"
 #include "Components/EditableTextBox.h"
-#include "GameInstance/PR_GameIntance.h"
+#include "GameInstance/PR_GameInstance.h"
 
 void UPR_CreateSessionPopUp::OnCancelButtonClicked()
 {
@@ -13,7 +13,7 @@ void UPR_CreateSessionPopUp::OnCancelButtonClicked()
 
 void UPR_CreateSessionPopUp::OnCreateSessionButtonClicked()
 {
-	if (UPR_GameIntance* GI = GetGameInstance<UPR_GameIntance>())
+	if (UPR_GameInstance* GI = GetGameInstance<UPR_GameInstance>())
 	{
 		FString RoomName = SessionNameTextBox->GetText().ToString().TrimStartAndEnd();
 		GI->CreateSession(RoomName);

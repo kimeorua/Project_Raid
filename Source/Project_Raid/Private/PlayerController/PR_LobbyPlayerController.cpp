@@ -7,7 +7,7 @@
 #include "GameState/PR_CharacterSelectGameState.h"
 
 #include "UI/PR_CharacterSelect_Top.h"
-#include "PlayerState/PR_CharacterSelectState.h"
+#include "PlayerState/PR_PlayerState.h"
 
 #include "Utils/LogHelper.h"
 
@@ -21,9 +21,9 @@ UPR_CharacterSelect_Top* APR_LobbyPlayerController::GetCharacterSelectUI() const
 	return CharacterSelectUI ? CharacterSelectUI : nullptr;
 }
 
-void APR_LobbyPlayerController::RequestChangeCharacter(ECharacterType NewType)
+void APR_LobbyPlayerController::RequestChangeCharacter(EWeaponType NewType)
 {
-	if (APR_CharacterSelectState* PR_PS = GetPlayerState<APR_CharacterSelectState>())
+	if (APR_PlayerState* PR_PS = GetPlayerState<APR_PlayerState>())
 	{
 		PR_PS->Server_SetCharacterType(NewType);
 	}
@@ -31,7 +31,7 @@ void APR_LobbyPlayerController::RequestChangeCharacter(ECharacterType NewType)
 
 void APR_LobbyPlayerController::RequestChangeIsReady(bool NewIsReady)
 {
-	if (APR_CharacterSelectState* PR_PS = GetPlayerState<APR_CharacterSelectState>())
+	if (APR_PlayerState* PR_PS = GetPlayerState<APR_PlayerState>())
 	{
 		PR_PS->Server_SetIsReady(NewIsReady);
 	}

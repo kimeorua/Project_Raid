@@ -6,12 +6,12 @@
 #include "Engine/GameInstance.h"
 #include "OnlineSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "PR_GameIntance.generated.h"
+#include "PR_GameInstance.generated.h"
 
 class IOnlineSubsystem;
 
 UCLASS()
-class PROJECT_RAID_API UPR_GameIntance : public UGameInstance
+class PROJECT_RAID_API UPR_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
