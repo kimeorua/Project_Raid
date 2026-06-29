@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GAS/ASC/PR_AbilitySystemComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 #include "PlayerState/PR_PlayerState.h"
@@ -33,12 +34,20 @@ void APR_PlayerCharacter::BeginPlay()
 void APR_PlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+	
+	if (APR_PlayerState* TargetPlayerState = GetPlayerState<APR_PlayerState>())
+	{
+		PR_ASC->InitAbilityActorInfo(TargetPlayerState, this);
+	}
+	
 	InitWeaponConfiguration();
 }
 
 void APR_PlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
+	
+	PR_ASC->InitAbilityActorInfo(PR_PlayerState, this);
 	
 	InitWeaponConfiguration();
 }
