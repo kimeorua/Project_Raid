@@ -12,7 +12,8 @@
 				"Engine",
 				"CommonUI",
 				"CoreUObject",
-				"GameplayAbilities"
+				"GameplayAbilities",
+				"DeveloperSettings"
 			]
 		}
 	],

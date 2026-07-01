@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/PR_BaseCharacter.h"
+#include "Type/Enums/PR_Enums.h"
 #include "PR_PlayerCharacter.generated.h"
 
 class UCameraComponent;
@@ -40,6 +41,8 @@ private:
 //---------------------Weapon--------------------//
 private:
 	void PlayerColorInitialization(FLinearColor NewColor);
+	void PlayerColorSettings(EWeaponType InType);
+	void PlayerWeaponAndAbilityInitialization(EWeaponType InType);
 	
 public:
 	void InitWeaponConfiguration();

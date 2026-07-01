@@ -10,6 +10,8 @@
 #include "Materials/MaterialInstanceDynamic.h"
 
 #include "PlayerState/PR_PlayerState.h"
+#include "Subsystem/PR_AbilityInitSubsystem.h"
+#include "DataAsset/PR_WeaponDataAsset.h"
 
 #include "Utils/LogHelper.h"
 
@@ -47,14 +49,17 @@ void APR_PlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 	
-	PR_ASC->InitAbilityActorInfo(PR_PlayerState, this);
+	if (APR_PlayerState* TargetPlayerState = GetPlayerState<APR_PlayerState>())
+	{
+		PR_ASC->InitAbilityActorInfo(TargetPlayerState, this);
+	}
 	
 	InitWeaponConfiguration();
 }
 
 void APR_PlayerCharacter::InitWeaponConfiguration()
 {
-	if (PR_PlayerState) return;
+	if (PR_PlayerState) { return; }
 	
 	APR_PlayerState* TargetPlayerState = GetPlayerState<APR_PlayerState>();
     
@@ -63,7 +68,30 @@ void APR_PlayerCharacter::InitWeaponConfiguration()
     
 	EWeaponType Type = PR_PlayerState->GetWeaponType();
 	
-	switch (Type)
+	PlayerColorSettings(Type);
+	PlayerWeaponAndAbilityInitialization(Type);
+}
+
+void APR_PlayerCharacter::PlayerColorInitialization(FLinearColor NewColor)
+{
+	if (!GetMesh()) return;
+	
+	const int32 NumMaterials = GetMesh()->GetNumMaterials();
+
+	for (int32 ElementIndex = 0; ElementIndex < NumMaterials; ++ElementIndex)
+	{
+		UMaterialInstanceDynamic* DynamicMat = GetMesh()->CreateDynamicMaterialInstance(ElementIndex);
+        
+		if (DynamicMat)
+		{
+			DynamicMat->SetVectorParameterValue(TEXT("Color"), NewColor);
+		}
+	}
+}
+
+void APR_PlayerCharacter::PlayerColorSettings(EWeaponType InType)
+{
+	switch (InType)
 	{
 	case EWeaponType::SwordShield:
 		PlayerColorInitialization(FLinearColor::White);
@@ -82,19 +110,24 @@ void APR_PlayerCharacter::InitWeaponConfiguration()
 	}
 }
 
-void APR_PlayerCharacter::PlayerColorInitialization(FLinearColor NewColor)
+void APR_PlayerCharacter::PlayerWeaponAndAbilityInitialization(EWeaponType InType)
 {
-	if (!GetMesh()) return;
-	
-	const int32 NumMaterials = GetMesh()->GetNumMaterials();
-
-	for (int32 ElementIndex = 0; ElementIndex < NumMaterials; ++ElementIndex)
+	if (HasAuthority() && PR_ASC)
 	{
-		UMaterialInstanceDynamic* DynamicMat = GetMesh()->CreateDynamicMaterialInstance(ElementIndex);
-        
-		if (DynamicMat)
+		UPR_AbilityInitSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UPR_AbilityInitSubsystem>();
+		if (!DataSubsystem) { return; }
+		
+		const UPR_WeaponDataAsset* InitData = DataSubsystem->GetWeaponInitData(InType);
+		if (!InitData) { return; }
+		
+		const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGive = InitData->GetGiveToAbilities();
+		
+		for (const TSubclassOf<UGameplayAbility>& AbilityClass : AbilitiesToGive)
 		{
-			DynamicMat->SetVectorParameterValue(TEXT("Color"), NewColor);
+			if (AbilityClass)
+			{
+				PR_ASC->GiveAbility(FGameplayAbilitySpec(AbilityClass, 1, 0, this));
+			}
 		}
 	}
 }
