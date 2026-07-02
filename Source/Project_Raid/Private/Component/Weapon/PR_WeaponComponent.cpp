@@ -16,6 +16,25 @@ void UPR_WeaponComponent::BeginPlay()
 	WeaponContainer.Empty();
 }
 
+void UPR_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	AActor* Owner = GetOwner();
+	if (Owner && Owner->HasAuthority())
+	{
+		for (auto& Pair : WeaponContainer)
+		{
+			APR_Weapon_Base* Weapon = Pair.Value;
+			if (IsValid(Weapon))
+			{
+				Weapon->Destroy();
+			}
+		}
+		WeaponContainer.Empty();
+	}
+	
+	Super::EndPlay(EndPlayReason);
+}
+
 void UPR_WeaponComponent::SettingWeapon(EEquipType InEquipType, APR_Weapon_Base* InWeapon, USkeletalMeshComponent* MeshComp)
 {
 	if (WeaponContainer.Contains(InEquipType)) { return; }

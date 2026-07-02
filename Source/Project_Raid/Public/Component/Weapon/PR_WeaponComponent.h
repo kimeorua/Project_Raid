@@ -21,6 +21,7 @@ private:
 public:	
 	UPR_WeaponComponent();
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	void SettingWeapon(EEquipType InEquipType, APR_Weapon_Base* InWeapon, USkeletalMeshComponent* MeshComp);
 };
