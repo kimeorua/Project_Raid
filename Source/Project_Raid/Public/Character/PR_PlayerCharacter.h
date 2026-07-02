@@ -10,6 +10,7 @@
 class UCameraComponent;
 class USpringArmComponent;
 class APR_PlayerState;
+class APR_Weapon_Base;
 
 UCLASS()
 class PROJECT_RAID_API APR_PlayerCharacter : public APR_BaseCharacter
@@ -43,6 +44,7 @@ private:
 	void PlayerColorInitialization(FLinearColor NewColor);
 	void PlayerColorSettings(EWeaponType InType);
 	void PlayerWeaponAndAbilityInitialization(EWeaponType InType);
+	void PlayerWeaponInitialization(const TArray<TSubclassOf<APR_Weapon_Base>>& InWeapons);
 	
 public:
 	void InitWeaponConfiguration();

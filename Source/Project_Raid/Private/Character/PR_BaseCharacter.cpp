@@ -2,8 +2,10 @@
 
 
 #include "Character/PR_BaseCharacter.h"
+
 #include "GAS/ASC/PR_AbilitySystemComponent.h"
 #include "GAS/AttributeSet/PR_BasicAttributeSet.h"
+#include "Component/Weapon/PR_WeaponComponent.h"
 
 APR_BaseCharacter::APR_BaseCharacter()
 {
@@ -14,6 +16,8 @@ APR_BaseCharacter::APR_BaseCharacter()
 	PR_ASC->SetReplicationMode(ReplicationMode);
 	
 	BasicAttributeSet = CreateDefaultSubobject<UPR_BasicAttributeSet>(TEXT("BasicAttributeSet"));
+	
+	WeaponComponent = CreateDefaultSubobject<UPR_WeaponComponent>(TEXT("WeaponComponent"));
 }
 
 void APR_BaseCharacter::BeginPlay()

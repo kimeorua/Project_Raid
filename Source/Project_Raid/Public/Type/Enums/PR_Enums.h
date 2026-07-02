@@ -14,3 +14,11 @@ enum class EWeaponType : uint8
 	Lance,
 	Katana
 };
+
+UENUM(BlueprintType)
+enum class EEquipType : uint8
+{
+	None,
+	LeftHand,
+	RightHand
+};

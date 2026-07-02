@@ -10,6 +10,7 @@
 
 class UPR_AbilitySystemComponent;
 class UPR_BasicAttributeSet;
+class UPR_WeaponComponent;
 
 UCLASS()
 class PROJECT_RAID_API APR_BaseCharacter : public ACharacter, public IAbilitySystemInterface
@@ -40,4 +41,9 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS/AttributeSet", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPR_BasicAttributeSet> BasicAttributeSet;	
+	
+	//--------------------Weapon Component-----------------------//
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WeaponComponent",meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UPR_WeaponComponent> WeaponComponent;
 };

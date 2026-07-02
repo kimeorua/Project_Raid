@@ -4,6 +4,7 @@
 #include "Character/PR_PlayerCharacter.h"
 
 #include "Camera/CameraComponent.h"
+#include "Component/Weapon/PR_WeaponComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/ASC/PR_AbilitySystemComponent.h"
@@ -12,6 +13,7 @@
 #include "PlayerState/PR_PlayerState.h"
 #include "Subsystem/PR_AbilityInitSubsystem.h"
 #include "DataAsset/PR_WeaponDataAsset.h"
+#include "Weapon/PR_Weapon_Base.h"
 
 #include "Utils/LogHelper.h"
 
@@ -120,6 +122,8 @@ void APR_PlayerCharacter::PlayerWeaponAndAbilityInitialization(EWeaponType InTyp
 		const UPR_WeaponDataAsset* InitData = DataSubsystem->GetWeaponInitData(InType);
 		if (!InitData) { return; }
 		
+		PlayerWeaponInitialization(InitData->GetWeapons());
+		
 		const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGive = InitData->GetGiveToAbilities();
 		
 		for (const TSubclassOf<UGameplayAbility>& AbilityClass : AbilitiesToGive)
@@ -129,5 +133,21 @@ void APR_PlayerCharacter::PlayerWeaponAndAbilityInitialization(EWeaponType InTyp
 				PR_ASC->GiveAbility(FGameplayAbilitySpec(AbilityClass, 1, 0, this));
 			}
 		}
+	}
+}
+
+void APR_PlayerCharacter::PlayerWeaponInitialization(const TArray<TSubclassOf<APR_Weapon_Base>>& InWeapons)
+{
+	if (!HasAuthority()) { return; }
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	for (TSubclassOf<APR_Weapon_Base> NewWeapon : InWeapons)
+	{
+		APR_Weapon_Base* SpawnedWeapon = GetWorld()->SpawnActor<APR_Weapon_Base> (NewWeapon, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+		WeaponComponent->SettingWeapon(SpawnedWeapon->GetEquipType(), SpawnedWeapon, GetMesh());
 	}
 }
