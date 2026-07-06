@@ -45,6 +45,7 @@ private:
 	void PlayerColorSettings(EWeaponType InType);
 	void PlayerWeaponAndAbilityInitialization(EWeaponType InType);
 	void PlayerWeaponInitialization(const TArray<TSubclassOf<APR_Weapon_Base>>& InWeapons);
+	void PlayerWeaponAnimLayerSetting(EWeaponType InType);
 	
 public:
 	void InitWeaponConfiguration();

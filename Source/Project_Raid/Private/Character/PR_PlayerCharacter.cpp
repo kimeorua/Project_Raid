@@ -72,6 +72,7 @@ void APR_PlayerCharacter::InitWeaponConfiguration()
 	
 	PlayerColorSettings(Type);
 	PlayerWeaponAndAbilityInitialization(Type);
+	PlayerWeaponAnimLayerSetting(Type);
 }
 
 void APR_PlayerCharacter::PlayerColorInitialization(FLinearColor NewColor)
@@ -150,4 +151,17 @@ void APR_PlayerCharacter::PlayerWeaponInitialization(const TArray<TSubclassOf<AP
 		APR_Weapon_Base* SpawnedWeapon = GetWorld()->SpawnActor<APR_Weapon_Base> (NewWeapon, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
 		WeaponComponent->SettingWeapon(SpawnedWeapon->GetEquipType(), SpawnedWeapon, GetMesh());
 	}
+}
+
+void APR_PlayerCharacter::PlayerWeaponAnimLayerSetting(EWeaponType InType)
+{
+	if (!GetMesh()) { return; }
+	
+	UPR_AbilityInitSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UPR_AbilityInitSubsystem>();
+	if (!DataSubsystem) { return; }
+		
+	const UPR_WeaponDataAsset* InitData = DataSubsystem->GetWeaponInitData(InType);
+	if (!InitData ||!InitData->GetWeaponAnim()) { return; }
+	
+	GetMesh()->LinkAnimClassLayers(InitData->GetWeaponAnim());
 }
