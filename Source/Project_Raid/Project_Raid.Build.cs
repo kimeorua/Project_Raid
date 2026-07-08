@@ -15,6 +15,7 @@ public class Project_Raid : ModuleRules
 			"Engine", 
 			"InputCore", 
 			"EnhancedInput",
+			"AnimGraphRuntime",
 			
 			"OnlineSubsystemEOS", 
 			"OnlineSubsystemUtils",
@@ -33,7 +34,7 @@ public class Project_Raid : ModuleRules
 			"SignalProcessing"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "AnimGraphRuntime" });
+		PrivateDependencyModuleNames.AddRange(new string[] { });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "Type/Enums/PR_Enums.h"
+#include "Type/Structs/PR_Structs.h"
 #include "PR_WeaponDataAsset.generated.h"
 
 class UGameplayAbility;
@@ -20,7 +21,10 @@ private:
 	EWeaponType Type = EWeaponType::None;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataAsset", meta = (AllowPrivateAccess = true))
-	TArray<TSubclassOf<UGameplayAbility>> GiveToAbilities;
+	TArray<FPR_InputAbilityConfig> InputWeaponAbilities;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = true))
+	TArray<TSubclassOf<UGameplayAbility>> NonInputWeaponAbilities;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataAsset", meta = (AllowPrivateAccess = true))
 	TArray<TSubclassOf<APR_Weapon_Base>> Weapons;
@@ -30,7 +34,8 @@ private:
 	
 public:
 	FORCEINLINE EWeaponType GetWeaponType() const { return Type; }
-	FORCEINLINE const TArray<TSubclassOf<UGameplayAbility>>& GetGiveToAbilities() const { return GiveToAbilities; }
+	FORCEINLINE const TArray<FPR_InputAbilityConfig>& GetInputWeaponAbilities() const { return InputWeaponAbilities; }
+	FORCEINLINE const TArray<TSubclassOf<UGameplayAbility>>& GetNonInputWeaponAbilities() const { return NonInputWeaponAbilities; }
 	FORCEINLINE const TArray<TSubclassOf<APR_Weapon_Base>>& GetWeapons() const { return Weapons; }
 	FORCEINLINE  TSubclassOf<UAnimInstance> GetWeaponAnim() const { return WeaponAnimBlueprintClass;}
 };

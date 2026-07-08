@@ -11,6 +11,8 @@ class UCameraComponent;
 class USpringArmComponent;
 class APR_PlayerState;
 class APR_Weapon_Base;
+class UInputMappingContext;
+class UPR_InputDataAsset;
 
 UCLASS()
 class PROJECT_RAID_API APR_PlayerCharacter : public APR_BaseCharacter
@@ -25,6 +27,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
@@ -49,4 +52,15 @@ private:
 	
 public:
 	void InitWeaponConfiguration();
+	
+//---------------------Input--------------------//
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "IMC", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "IMC", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UPR_InputDataAsset> InputDataAsset;
+	
+	void Input_AbilityInputTagPressed(FGameplayTag InInputTag);
+	void Input_AbilityInputTagReleased(FGameplayTag InInputTag);
 };

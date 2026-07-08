@@ -3,12 +3,14 @@
 
 #include "Character/PR_PlayerCharacter.h"
 
+#include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Component/Weapon/PR_WeaponComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/ASC/PR_AbilitySystemComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Component/Input/PR_EnhancedInputComponent.h"
 
 #include "PlayerState/PR_PlayerState.h"
 #include "Subsystem/PR_AbilityInitSubsystem.h"
@@ -33,6 +35,16 @@ APR_PlayerCharacter::APR_PlayerCharacter()
 void APR_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		if (PC->IsLocalController())
+		{
+			FInputModeGameOnly InputMode;
+			PC->SetInputMode(InputMode);
+			PC->bShowMouseCursor = false;
+		}
+	}
 }
 
 void APR_PlayerCharacter::PossessedBy(AController* NewController)
@@ -45,6 +57,30 @@ void APR_PlayerCharacter::PossessedBy(AController* NewController)
 	}
 	
 	InitWeaponConfiguration();
+}
+
+void APR_PlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC) { return; }
+
+	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
+	if (!LocalPlayer) { return; }
+
+	UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+
+	if (SubSystem)
+	{
+		SubSystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+	
+	UPR_EnhancedInputComponent* PR_InputComp = Cast<UPR_EnhancedInputComponent>(PlayerInputComponent);
+	
+	if (!PR_InputComp || !InputDataAsset) return;
+	
+	PR_InputComp->BindAbilityInputAction(InputDataAsset, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased);
 }
 
 void APR_PlayerCharacter::OnRep_PlayerState()
@@ -73,6 +109,18 @@ void APR_PlayerCharacter::InitWeaponConfiguration()
 	PlayerColorSettings(Type);
 	PlayerWeaponAndAbilityInitialization(Type);
 	PlayerWeaponAnimLayerSetting(Type);
+}
+
+void APR_PlayerCharacter::Input_AbilityInputTagPressed(FGameplayTag InInputTag)
+{
+	if (! InInputTag.IsValid()) { return; }
+	PR_ASC->OnAbilityInputPressed(InInputTag);
+}
+
+void APR_PlayerCharacter::Input_AbilityInputTagReleased(FGameplayTag InInputTag)
+{
+	if (! InInputTag.IsValid()) { return; }
+	PR_ASC->OnAbilityInputReleased(InInputTag);
 }
 
 void APR_PlayerCharacter::PlayerColorInitialization(FLinearColor NewColor)
@@ -125,9 +173,21 @@ void APR_PlayerCharacter::PlayerWeaponAndAbilityInitialization(EWeaponType InTyp
 		
 		PlayerWeaponInitialization(InitData->GetWeapons());
 		
-		const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGive = InitData->GetGiveToAbilities();
+		for (const FPR_InputAbilityConfig& Config : InitData->GetInputWeaponAbilities())
+		{
+			if (Config.AbilityClass)
+			{
+				FGameplayAbilitySpec AbilitySpec(Config.AbilityClass, 1, 0, this);
+
+				if (Config.InputTag.IsValid())
+				{
+					AbilitySpec.GetDynamicSpecSourceTags().AddTag(Config.InputTag);
+				}
+				PR_ASC->GiveAbility(AbilitySpec);
+			}
+		}
 		
-		for (const TSubclassOf<UGameplayAbility>& AbilityClass : AbilitiesToGive)
+		for (const TSubclassOf<UGameplayAbility>& AbilityClass : InitData->GetNonInputWeaponAbilities())
 		{
 			if (AbilityClass)
 			{

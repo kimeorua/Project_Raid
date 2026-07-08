@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayTagContainer.h"
 #include "PR_AbilitySystemComponent.generated.h"
 
 UCLASS()
 class PROJECT_RAID_API UPR_AbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-	
+public:
+	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
+	void OnAbilityInputReleased(const FGameplayTag& InInputTag);
 };
