@@ -113,12 +113,14 @@ void APR_PlayerCharacter::InitWeaponConfiguration()
 
 void APR_PlayerCharacter::Input_AbilityInputTagPressed(FGameplayTag InInputTag)
 {
+	if (!IsLocallyControlled()) { return; }
 	if (! InInputTag.IsValid()) { return; }
 	PR_ASC->OnAbilityInputPressed(InInputTag);
 }
 
 void APR_PlayerCharacter::Input_AbilityInputTagReleased(FGameplayTag InInputTag)
 {
+	if (!IsLocallyControlled()) { return; }
 	if (! InInputTag.IsValid()) { return; }
 	PR_ASC->OnAbilityInputReleased(InInputTag);
 }

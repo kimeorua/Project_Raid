@@ -9,7 +9,7 @@ void UPR_AbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInp
 	
 	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
-		if (Spec.DynamicAbilityTags.HasTagExact(InInputTag))
+		if (Spec.GetDynamicSpecSourceTags().HasTagExact(InInputTag))
 		{
 			Spec.InputPressed = true;
 			
@@ -31,7 +31,7 @@ void UPR_AbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InIn
 	
 	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
-		if (Spec.DynamicAbilityTags.HasTagExact(InInputTag))
+		if (Spec.GetDynamicSpecSourceTags().HasTagExact(InInputTag))
 		{
 			Spec.InputPressed = false;
 			
