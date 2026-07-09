@@ -17,6 +17,8 @@
 #include "DataAsset/PR_WeaponDataAsset.h"
 #include "Weapon/PR_Weapon_Base.h"
 
+#include "PR_GameplayTags.h"
+
 #include "Utils/LogHelper.h"
 
 APR_PlayerCharacter::APR_PlayerCharacter()
@@ -25,11 +27,20 @@ APR_PlayerCharacter::APR_PlayerCharacter()
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	SpringArmComponent->TargetArmLength = 200.0f;
 	SpringArmComponent->SocketOffset = FVector(0.0f, 20.0f, 80.0f);
+	SpringArmComponent->bUsePawnControlRotation = true;
 	
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.0f, 96.0f);
+	
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw   = false;
+	bUseControllerRotationRoll  = false;
+	
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 }
 
 void APR_PlayerCharacter::BeginPlay()
@@ -78,8 +89,10 @@ void APR_PlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	
 	UPR_EnhancedInputComponent* PR_InputComp = Cast<UPR_EnhancedInputComponent>(PlayerInputComponent);
 	
-	if (!PR_InputComp || !InputDataAsset) return;
+	if (!PR_InputComp || !InputDataAsset) { return; }
 	
+	PR_InputComp->BindNativeInputAction(InputDataAsset, PR_GameplayTags::PR_Input_Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
+	PR_InputComp->BindNativeInputAction(InputDataAsset, PR_GameplayTags::PR_Input_Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
 	PR_InputComp->BindAbilityInputAction(InputDataAsset, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased);
 }
 
@@ -109,6 +122,40 @@ void APR_PlayerCharacter::InitWeaponConfiguration()
 	PlayerColorSettings(Type);
 	PlayerWeaponAndAbilityInitialization(Type);
 	PlayerWeaponAnimLayerSetting(Type);
+}
+
+void APR_PlayerCharacter::InputMove(const FInputActionValue& InputActionValue)
+{
+	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
+	const FRotator MovementRotator(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
+
+	if (MovementVector.Y != 0.0f)
+	{
+		const FVector ForwardDirection = MovementRotator.RotateVector(FVector::ForwardVector);
+
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+	}
+
+	if (MovementVector.X != 0.0f)
+	{
+		const FVector RightDirection = MovementRotator.RotateVector(FVector::RightVector);
+
+		AddMovementInput(RightDirection, MovementVector.X);
+	}
+}
+
+void APR_PlayerCharacter::InputLook(const FInputActionValue& InputActionValue)
+{
+	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
+
+	if (LookAxisVector.X != 0.0f)
+	{
+		AddControllerYawInput(LookAxisVector.X);
+	}
+	if (LookAxisVector.Y != 0.0f)
+	{
+		AddControllerPitchInput(LookAxisVector.Y);
+	}
 }
 
 void APR_PlayerCharacter::Input_AbilityInputTagPressed(FGameplayTag InInputTag)

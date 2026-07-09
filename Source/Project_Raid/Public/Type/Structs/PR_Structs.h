@@ -14,7 +14,7 @@ struct  FPR_InputAbilityConfig
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="GAS")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="GAS", meta = (Categories = "PR"))
 	FGameplayTag InputTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
@@ -31,10 +31,10 @@ struct FPR_InputActionConfig
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UInputAction> InputAction = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS", meta = (Categories = "PR"))
 	FGameplayTag InputTag;
 
 	bool IsValid() const

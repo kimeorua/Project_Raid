@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/PR_BaseCharacter.h"
 #include "Type/Enums/PR_Enums.h"
+#include "InputActionValue.h"
 #include "PR_PlayerCharacter.generated.h"
 
 class UCameraComponent;
@@ -60,6 +61,12 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "IMC", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UPR_InputDataAsset> InputDataAsset;
+	
+	float LockedMovementYaw = 0.0f;
+	bool bIsMoving = false;
+	
+	void InputMove(const FInputActionValue& InputActionValue);
+	void InputLook(const FInputActionValue& InputActionValue);
 	
 	void Input_AbilityInputTagPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InInputTag);

@@ -5,5 +5,6 @@
 
 namespace PR_GameplayTags
 {
-	UE_DEFINE_GAMEPLAY_TAG(Input_Move, "Input.Move");
+	UE_DEFINE_GAMEPLAY_TAG(PR_Input_Move, "PR.Input.Move");
+	UE_DEFINE_GAMEPLAY_TAG(PR_Input_Look, "PR.Input.Look");
 }
