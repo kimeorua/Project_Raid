@@ -18,6 +18,7 @@
 #include "Weapon/PR_Weapon_Base.h"
 
 #include "PR_GameplayTags.h"
+#include "Component/UI/PR_UIComponent_Base.h"
 
 #include "Utils/LogHelper.h"
 
@@ -68,6 +69,11 @@ void APR_PlayerCharacter::PossessedBy(AController* NewController)
 	}
 	
 	InitWeaponConfiguration();
+	
+	if (IsLocallyControlled())
+	{
+		UIComponent->InitComponent(this);
+	}
 }
 
 void APR_PlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -106,6 +112,11 @@ void APR_PlayerCharacter::OnRep_PlayerState()
 	}
 	
 	InitWeaponConfiguration();
+	
+	if (IsLocallyControlled())
+	{
+		UIComponent->InitComponent(this);
+	}
 }
 
 void APR_PlayerCharacter::InitWeaponConfiguration()

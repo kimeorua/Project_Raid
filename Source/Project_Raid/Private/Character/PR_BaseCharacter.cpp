@@ -3,6 +3,7 @@
 
 #include "Character/PR_BaseCharacter.h"
 
+#include "Component/UI/PR_UIComponent_Base.h"
 #include "GAS/ASC/PR_AbilitySystemComponent.h"
 #include "GAS/AttributeSet/PR_BasicAttributeSet.h"
 #include "Component/Weapon/PR_WeaponComponent.h"
@@ -18,6 +19,8 @@ APR_BaseCharacter::APR_BaseCharacter()
 	BasicAttributeSet = CreateDefaultSubobject<UPR_BasicAttributeSet>(TEXT("BasicAttributeSet"));
 	
 	WeaponComponent = CreateDefaultSubobject<UPR_WeaponComponent>(TEXT("WeaponComponent"));
+	
+	UIComponent = CreateDefaultSubobject<UPR_UIComponent_Base>(TEXT("UIComponent"));
 }
 
 void APR_BaseCharacter::BeginPlay()

@@ -24,8 +24,6 @@ class PROJECT_RAID_API APR_PlayerCharacter : public APR_BaseCharacter
 public:
 	APR_PlayerCharacter();
 	virtual void OnRep_PlayerState() override;
-	
-protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
