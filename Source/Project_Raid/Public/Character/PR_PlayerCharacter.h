@@ -74,4 +74,7 @@ private:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UIComponent",meta = (AllowPrivateAccess = true))
 	TObjectPtr<UPR_UIComponent_Player> UIComponent;
+	
+public:
+	FORCEINLINE UPR_UIComponent_Player* GetUIComponent() const { return UIComponent; };
 };

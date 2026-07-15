@@ -20,4 +20,7 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UIComponent",meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPR_UIComponent_Enemy> UIComponent;
+
+public:
+	FORCEINLINE UPR_UIComponent_Enemy* GetUIComponent() const { return UIComponent; };
 };
