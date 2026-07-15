@@ -19,8 +19,6 @@ APR_BaseCharacter::APR_BaseCharacter()
 	BasicAttributeSet = CreateDefaultSubobject<UPR_BasicAttributeSet>(TEXT("BasicAttributeSet"));
 	
 	WeaponComponent = CreateDefaultSubobject<UPR_WeaponComponent>(TEXT("WeaponComponent"));
-	
-	UIComponent = CreateDefaultSubobject<UPR_UIComponent_Base>(TEXT("UIComponent"));
 }
 
 void APR_BaseCharacter::BeginPlay()

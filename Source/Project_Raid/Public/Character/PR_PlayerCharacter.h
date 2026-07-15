@@ -14,6 +14,7 @@ class APR_PlayerState;
 class APR_Weapon_Base;
 class UInputMappingContext;
 class UPR_InputDataAsset;
+class UPR_UIComponent_Player;
 
 UCLASS()
 class PROJECT_RAID_API APR_PlayerCharacter : public APR_BaseCharacter
@@ -68,4 +69,9 @@ private:
 	
 	void Input_AbilityInputTagPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InInputTag);
+	
+	//--------------------UI Component-----------------------//
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UIComponent",meta = (AllowPrivateAccess = true))
+	TObjectPtr<UPR_UIComponent_Player> UIComponent;
 };

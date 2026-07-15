@@ -16,9 +16,8 @@
 #include "Subsystem/PR_AbilityInitSubsystem.h"
 #include "DataAsset/PR_WeaponDataAsset.h"
 #include "Weapon/PR_Weapon_Base.h"
-
 #include "PR_GameplayTags.h"
-#include "Component/UI/PR_UIComponent_Base.h"
+#include "Component/UI/PR_UIComponent_Player.h"
 
 #include "Utils/LogHelper.h"
 
@@ -42,6 +41,8 @@ APR_PlayerCharacter::APR_PlayerCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+	
+	UIComponent = CreateDefaultSubobject<UPR_UIComponent_Player>("Player UI Component");
 }
 
 void APR_PlayerCharacter::BeginPlay()
@@ -72,7 +73,7 @@ void APR_PlayerCharacter::PossessedBy(AController* NewController)
 	
 	if (IsLocallyControlled())
 	{
-		UIComponent->InitComponent(this);
+		UIComponent->InitComponent();
 	}
 }
 
@@ -115,7 +116,7 @@ void APR_PlayerCharacter::OnRep_PlayerState()
 	
 	if (IsLocallyControlled())
 	{
-		UIComponent->InitComponent(this);
+		UIComponent->InitComponent();
 	}
 }
 
