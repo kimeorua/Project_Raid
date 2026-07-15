@@ -23,4 +23,8 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<UPR_PlayerHUD> HUD_Player;
+	
+	//---------------HP 변동---------------------------//
+	virtual void OnHPChanged(const FOnAttributeChangeData& Data);
+	virtual void OnMaxHPChanged(const FOnAttributeChangeData& Data);
 };

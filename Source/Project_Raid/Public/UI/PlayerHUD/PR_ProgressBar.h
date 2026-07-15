@@ -26,5 +26,5 @@ protected:
 	virtual void NativeConstruct() override;
 	
 public:
-	void SetPercent(float Percent);
+	void SetPercent(float Percent) const;
 };

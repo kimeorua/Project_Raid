@@ -13,6 +13,8 @@ UCLASS()
 class PROJECT_RAID_API UPR_PlayerHUD : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	void UpdateHPBar_Owner(float NewPercent) const;
 	
 protected:
 	virtual void NativeConstruct() override;

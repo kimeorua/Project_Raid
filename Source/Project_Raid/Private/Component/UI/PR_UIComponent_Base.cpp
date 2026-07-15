@@ -29,3 +29,19 @@ void UPR_UIComponent_Base::InitComponent()
 		}
 	}
 }
+
+void UPR_UIComponent_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	
+	HPChangedDelegateHandle.Reset();
+	MaxHPChangedDelegateHandle.Reset();
+}
+
+void UPR_UIComponent_Base::OnHPChanged(const FOnAttributeChangeData& Data)
+{
+}
+
+void UPR_UIComponent_Base::OnMaxHPChanged(const FOnAttributeChangeData& Data)
+{
+}

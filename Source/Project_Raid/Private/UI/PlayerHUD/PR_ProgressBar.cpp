@@ -12,7 +12,7 @@ void UPR_ProgressBar::NativeConstruct()
 	Bar->SetFillColorAndOpacity(Color);
 }
 
-void UPR_ProgressBar::SetPercent(float Percent)
+void UPR_ProgressBar::SetPercent(float Percent) const
 {
-
+	Bar->SetPercent(Percent);
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GAS/AttributeSet/PR_BasicAttributeSet.h"
 #include "PR_UIComponent_Base.generated.h"
 
 class UAbilitySystemComponent;
@@ -18,6 +19,7 @@ public:
 	UPR_UIComponent_Base();
 	virtual void BeginPlay() override;
 	virtual void InitComponent();
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 protected:
 	UPROPERTY()
@@ -25,4 +27,11 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<APR_BaseCharacter> OwnerCharacter;
+	
+	//---------------HP 변동---------------------------//
+	virtual void OnHPChanged(const FOnAttributeChangeData& Data);
+	virtual void OnMaxHPChanged(const FOnAttributeChangeData& Data);
+	
+	FDelegateHandle HPChangedDelegateHandle;
+	FDelegateHandle MaxHPChangedDelegateHandle;
 };
