@@ -16,6 +16,7 @@ public:
 	UPR_UIComponent_Player();
 	virtual void BeginPlay() override;
 	virtual void InitComponent() override;
+	void OtherPlayersUI_Create(APlayerController* PC);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))

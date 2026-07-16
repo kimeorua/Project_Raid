@@ -8,6 +8,7 @@
 
 class UVerticalBox;
 class UPR_ProgressBar;
+class APlayerState;
 
 UCLASS()
 class PROJECT_RAID_API UPR_PlayerHUD : public UUserWidget
@@ -15,6 +16,7 @@ class PROJECT_RAID_API UPR_PlayerHUD : public UUserWidget
 	GENERATED_BODY()
 public:
 	void UpdateHPBar_Owner(float NewPercent) const;
+	void CreateOtherPlayerBar(APlayerState* PS);
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -27,4 +29,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD|Widgets", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UPR_ProgressBar> OtherHPBar;
+	
+private:
+	UPROPERTY()
+	TMap<TObjectPtr<APlayerState>, TObjectPtr<UUserWidget>> PartySlotMap;
 };

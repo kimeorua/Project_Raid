@@ -3,6 +3,7 @@
 
 #include "Component/UI/PR_UIComponent_Player.h"
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/GameState.h"
 
 #include "Character/PR_BaseCharacter.h"
 #include "UI/PlayerHUD/PR_PlayerHUD.h"
@@ -20,11 +21,11 @@ void UPR_UIComponent_Player::BeginPlay()
 void UPR_UIComponent_Player::InitComponent()
 {
 	Super::InitComponent();
+	APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetController());
 	
 	if (!HUD_Player)
 	{
 		if (!OwnerCharacter) { return; }
-		APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetController());
 
 		if (PC && OwnerCharacter->IsLocallyControlled() && PC->IsLocalController())
 		{
@@ -53,6 +54,8 @@ void UPR_UIComponent_Player::InitComponent()
 
 		HUD_Player->UpdateHPBar_Owner(CurrentHealth / CurrentMaxHealth);
 	}
+	
+	OtherPlayersUI_Create(PC);
 }
 
 void UPR_UIComponent_Player::OnHPChanged(const FOnAttributeChangeData& Data)
@@ -72,5 +75,21 @@ void UPR_UIComponent_Player::OnMaxHPChanged(const FOnAttributeChangeData& Data)
 		float CurrentHP = ASC->GetNumericAttribute(UPR_BasicAttributeSet::GetHPAttribute());
 
 		HUD_Player->UpdateHPBar_Owner(CurrentHP / Data.NewValue);
+	}
+}
+
+void UPR_UIComponent_Player::OtherPlayersUI_Create(APlayerController* PC)
+{
+	if (!HUD_Player) { return; }
+	
+	AGameState* GameState = Cast<AGameState>(GetWorld()->GetGameState());
+	if (!GameState) { return; }
+	
+	APlayerState* MyPlayerState = OwnerCharacter ? OwnerCharacter->GetPlayerState() : nullptr;
+	
+	for (APlayerState* PS : GameState->PlayerArray)
+	{
+		if (PS == MyPlayerState) { continue; }
+		HUD_Player->CreateOtherPlayerBar(PS);
 	}
 }

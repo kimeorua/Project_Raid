@@ -71,7 +71,7 @@ void APR_PlayerCharacter::PossessedBy(AController* NewController)
 	
 	InitWeaponConfiguration();
 	
-	if (IsLocallyControlled())
+	if (UIComponent)
 	{
 		UIComponent->InitComponent();
 	}
@@ -114,9 +114,17 @@ void APR_PlayerCharacter::OnRep_PlayerState()
 	
 	InitWeaponConfiguration();
 	
-	if (IsLocallyControlled())
+	APlayerController* LocalPC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	if (LocalPC && LocalPC->IsLocalController())
 	{
-		UIComponent->InitComponent();
+		if (APR_PlayerCharacter* LocalChar = Cast<APR_PlayerCharacter>(LocalPC->GetPawn()))
+		{
+			if (UPR_UIComponent_Player* LocalUIComp = LocalChar->GetUIComponent()) // UIComponent 게터 사용
+			{
+				LocalUIComp->InitComponent();
+				LocalUIComp->OtherPlayersUI_Create(LocalPC);
+			}
+		}
 	}
 }
 
