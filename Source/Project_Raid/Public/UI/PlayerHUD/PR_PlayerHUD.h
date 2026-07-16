@@ -16,6 +16,7 @@ class PROJECT_RAID_API UPR_PlayerHUD : public UUserWidget
 	GENERATED_BODY()
 public:
 	void UpdateHPBar_Owner(float NewPercent) const;
+	void UpdateHPBar_Other(int32 ID, float NewPercent);
 	void CreateOtherPlayerBar(APlayerState* PS);
 	
 protected:
@@ -32,5 +33,5 @@ protected:
 	
 private:
 	UPROPERTY()
-	TMap<TObjectPtr<APlayerState>, TObjectPtr<UUserWidget>> PartySlotMap;
+	TMap<int32, TObjectPtr<UPR_ProgressBar>> PartySlotMap;
 };

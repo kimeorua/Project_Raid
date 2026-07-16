@@ -17,7 +17,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void InitComponent() override;
 	void OtherPlayersUI_Create(APlayerController* PC);
-	
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UPR_PlayerHUD> HUDClass;
@@ -28,4 +28,7 @@ protected:
 	//---------------HP 변동---------------------------//
 	virtual void OnHPChanged(const FOnAttributeChangeData& Data);
 	virtual void OnMaxHPChanged(const FOnAttributeChangeData& Data);
+	
+	UFUNCTION()
+	void HandlePartyHPChanged(int32 TargetID, float NewPercent);
 };

@@ -4,17 +4,23 @@
 #include "GAS/AttributeSet/PR_BasicAttributeSet.h"
 
 #include "GameplayEffectExtension.h"
+#include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
+
+#include "GameState/PR_GameState_BattelState.h"
+#include "Utils/LogHelper.h"
 
 UPR_BasicAttributeSet::UPR_BasicAttributeSet()
 {
 	InitMaxHP(100.0f);
-	InitHP(100.0f);
+	InitHP(1.0f);
 }
 
 void UPR_BasicAttributeSet::OnRep_HP(const FGameplayAttributeData& OldVale)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, HP, OldVale);
+	
+	BroadcastPartyHPChanged();
 }
 
 void UPR_BasicAttributeSet::OnRep_MaxHP(const FGameplayAttributeData& OldVale)
@@ -50,6 +56,38 @@ void UPR_BasicAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffe
 	
 	FGameplayEffectContextHandle Context = Data.EffectSpec.GetEffectContext();
 	UAbilitySystemComponent* SourceASC = Context.GetOriginalInstigatorAbilitySystemComponent();
+	
+	if (!PR_GS)
+	{
+		PR_GS = GetWorld()->GetGameState<APR_GameState_BattelState>();
+	}
 
-	// 이후 GE로 인해 변동 될 로직 구현
+	if (Data.EvaluatedData.Attribute == GetHPAttribute())
+	{
+		SetHP(FMath::Clamp(GetHP(), 0.0f, GetMaxHP()));
+		
+		BroadcastPartyHPChanged();
+	}
+}
+
+void UPR_BasicAttributeSet::BroadcastPartyHPChanged()
+{
+	APawn* Pawn = Cast<APawn>(GetOwningActor());
+	if (!Pawn) { return; }
+	
+	APlayerState* PS = Pawn->GetPlayerState();
+	if (!IsValid(PS)) { return; }
+	
+	if (!IsValid(PR_GS))
+	{
+		if (UWorld* World = GetWorld())
+		{
+			PR_GS = World->GetGameState<APR_GameState_BattelState>();
+		}
+	}
+	
+	if (IsValid(PR_GS))
+	{
+		PR_GS->OnPartyHPChanged.Broadcast(PS->GetPlayerId(), GetHP() / GetMaxHP());
+	}
 }

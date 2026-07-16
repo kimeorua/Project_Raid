@@ -119,7 +119,7 @@ void APR_PlayerCharacter::OnRep_PlayerState()
 	{
 		if (APR_PlayerCharacter* LocalChar = Cast<APR_PlayerCharacter>(LocalPC->GetPawn()))
 		{
-			if (UPR_UIComponent_Player* LocalUIComp = LocalChar->GetUIComponent()) // UIComponent 게터 사용
+			if (UPR_UIComponent_Player* LocalUIComp = LocalChar->GetUIComponent())
 			{
 				LocalUIComp->InitComponent();
 				LocalUIComp->OtherPlayersUI_Create(LocalPC);

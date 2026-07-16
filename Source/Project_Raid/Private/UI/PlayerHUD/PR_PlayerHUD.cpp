@@ -2,11 +2,10 @@
 
 
 #include "UI/PlayerHUD/PR_PlayerHUD.h"
-
 #include "Components/VerticalBox.h"
-#include "GameFramework/GameState.h"
 
 #include "UI/PlayerHUD/PR_ProgressBar.h"
+#include "Utils/LogHelper.h"
 
 void UPR_PlayerHUD::UpdateHPBar_Owner(float NewPercent) const
 {
@@ -15,23 +14,31 @@ void UPR_PlayerHUD::UpdateHPBar_Owner(float NewPercent) const
 	Player_HP_Bar->SetPercent(NewPercent);
 }
 
+void UPR_PlayerHUD::UpdateHPBar_Other(int32 ID, float NewPercent)
+{
+	if (!PartySlotMap.Contains(ID)) { return; }
+	
+	if (UPR_ProgressBar* TargetBar = PartySlotMap.FindRef(ID))
+	{
+		TargetBar->SetPercent(NewPercent);
+	}
+}
+
 void UPR_PlayerHUD::CreateOtherPlayerBar(APlayerState* PS)
 {
-	AGameState* GameState = Cast<AGameState>(GetWorld()->GetGameState());
-	if (!GameState) { return; }
+	if (!PS) { return; }
 	
+	int32 TargetID = PS->GetPlayerId();
+	
+	if (PartySlotMap.Contains(TargetID)) { return; }
+
 	APlayerController* PC = GetOwningPlayer();
+	if (!PC || !OtherPlayerBox || !OtherHPBar) { return; }
 	
-	if (PartySlotMap.Contains(PS)) {return; }
-	
-	int32 MaxOtherSlots = FMath::Max(0, GameState->PlayerArray.Num() - 1);
-	
-	if (OtherPlayerBox->GetChildrenCount() >= MaxOtherSlots) { return; }
-	
-	if (UUserWidget* OthersBar = CreateWidget<UUserWidget>(PC, OtherHPBar))
+	if (UPR_ProgressBar* OthersBar = CreateWidget<UPR_ProgressBar>(PC, OtherHPBar))
 	{
 		OtherPlayerBox->AddChild(OthersBar);
-		PartySlotMap.Add(PS, OthersBar);
+		PartySlotMap.Add(TargetID, OthersBar);
 	}
 }
 

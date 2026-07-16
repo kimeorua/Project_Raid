@@ -2,12 +2,17 @@
 
 
 #include "Component/UI/PR_UIComponent_Player.h"
+
+#include "AbilitySystemGlobals.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/GameState.h"
 
 #include "Character/PR_BaseCharacter.h"
+#include "GameFramework/PlayerState.h"
 #include "UI/PlayerHUD/PR_PlayerHUD.h"
 #include "GAS/AttributeSet/PR_BasicAttributeSet.h"
+#include "GameState/PR_GameState_BattelState.h"
+#include "Utils/LogHelper.h"
 
 UPR_UIComponent_Player::UPR_UIComponent_Player()
 {
@@ -21,17 +26,17 @@ void UPR_UIComponent_Player::BeginPlay()
 void UPR_UIComponent_Player::InitComponent()
 {
 	Super::InitComponent();
-	APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetController());
+	APlayerController* LocalPC = Cast<APlayerController>(OwnerCharacter->GetController());
 	
 	if (!HUD_Player)
 	{
 		if (!OwnerCharacter) { return; }
 
-		if (PC && OwnerCharacter->IsLocallyControlled() && PC->IsLocalController())
+		if (LocalPC && LocalPC->IsLocalController())
 		{
 			if (!HUDClass) { return; }
 
-			UUserWidget* HUD = CreateWidget<UUserWidget>(PC, HUDClass);
+			UUserWidget* HUD = CreateWidget<UUserWidget>(LocalPC, HUDClass);
 			if (!HUD) { return; }
 
 			HUD_Player = Cast<UPR_PlayerHUD>(HUD);
@@ -55,7 +60,12 @@ void UPR_UIComponent_Player::InitComponent()
 		HUD_Player->UpdateHPBar_Owner(CurrentHealth / CurrentMaxHealth);
 	}
 	
-	OtherPlayersUI_Create(PC);
+	OtherPlayersUI_Create(LocalPC);
+	
+	if (APR_GameState_BattelState* GS = GetWorld() ? GetWorld()->GetGameState<APR_GameState_BattelState>() : nullptr)
+	{
+		GS->OnPartyHPChanged.AddDynamic(this, &UPR_UIComponent_Player::HandlePartyHPChanged);
+	}
 }
 
 void UPR_UIComponent_Player::OnHPChanged(const FOnAttributeChangeData& Data)
@@ -85,11 +95,17 @@ void UPR_UIComponent_Player::OtherPlayersUI_Create(APlayerController* PC)
 	AGameState* GameState = Cast<AGameState>(GetWorld()->GetGameState());
 	if (!GameState) { return; }
 	
-	APlayerState* MyPlayerState = OwnerCharacter ? OwnerCharacter->GetPlayerState() : nullptr;
+	APlayerState* PlayerState = OwnerCharacter ? OwnerCharacter->GetPlayerState() : nullptr;
 	
 	for (APlayerState* PS : GameState->PlayerArray)
 	{
-		if (PS == MyPlayerState) { continue; }
+		if (PS == PlayerState) { continue; }
 		HUD_Player->CreateOtherPlayerBar(PS);
 	}
+}
+
+void UPR_UIComponent_Player::HandlePartyHPChanged(int32 TargetID, float NewPercent)
+{
+	if (!HUD_Player) { return; }
+	HUD_Player->UpdateHPBar_Other(TargetID, NewPercent);
 }
