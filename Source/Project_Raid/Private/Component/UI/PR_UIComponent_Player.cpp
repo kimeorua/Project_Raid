@@ -59,13 +59,7 @@ void UPR_UIComponent_Player::InitComponent()
 
 		HUD_Player->UpdateHPBar_Owner(CurrentHealth / CurrentMaxHealth);
 	}
-	
-	OtherPlayersUI_Create(LocalPC);
-	
-	if (APR_GameState_BattelState* GS = GetWorld() ? GetWorld()->GetGameState<APR_GameState_BattelState>() : nullptr)
-	{
-		GS->OnPartyHPChanged.AddDynamic(this, &UPR_UIComponent_Player::HandlePartyHPChanged);
-	}
+	TryInitializeNetworkMultiplayerUI();
 }
 
 void UPR_UIComponent_Player::OnHPChanged(const FOnAttributeChangeData& Data)
@@ -88,19 +82,61 @@ void UPR_UIComponent_Player::OnMaxHPChanged(const FOnAttributeChangeData& Data)
 	}
 }
 
-void UPR_UIComponent_Player::OtherPlayersUI_Create(APlayerController* PC)
+void UPR_UIComponent_Player::TryInitializeNetworkMultiplayerUI()
 {
-	if (!HUD_Player) { return; }
+	APR_GameState_BattelState* GS = GetWorld() ? GetWorld()->GetGameState<APR_GameState_BattelState>() : nullptr;
 	
-	AGameState* GameState = Cast<AGameState>(GetWorld()->GetGameState());
-	if (!GameState) { return; }
-	
-	APlayerState* PlayerState = OwnerCharacter ? OwnerCharacter->GetPlayerState() : nullptr;
-	
-	for (APlayerState* PS : GameState->PlayerArray)
+	if (!GS)
 	{
-		if (PS == PlayerState) { continue; }
-		HUD_Player->CreateOtherPlayerBar(PS);
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UPR_UIComponent_Player::TryInitializeNetworkMultiplayerUI);
+		return;
+	}
+	
+	bool bIsAllIdsInvalid = true;
+	for (APlayerState* PS : GS->PlayerArray)
+	{
+		if (PS && PS->GetPlayerId() != 0)
+		{
+			bIsAllIdsInvalid = false;
+			break;
+		}
+	}
+	if (bIsAllIdsInvalid && GS->PlayerArray.Num() > 1)
+	{
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UPR_UIComponent_Player::TryInitializeNetworkMultiplayerUI);
+		return;
+	}
+	
+	GS->OnPartyHPChanged.RemoveDynamic(this, &UPR_UIComponent_Player::HandlePartyHPChanged);
+	GS->OnPartyHPChanged.AddDynamic(this, &UPR_UIComponent_Player::HandlePartyHPChanged);
+	
+	APlayerState* MyPlayerState = OwnerCharacter ? OwnerCharacter->GetPlayerState() : nullptr;
+
+	if (HUD_Player)
+	{
+		HUD_Player->ClearOtherPlayerBars();
+		
+		for (APlayerState* PS : GS->PlayerArray)
+		{
+			if (!IsValid(PS) || PS == MyPlayerState) { continue; }
+
+			HUD_Player->CreateOtherPlayerBar(PS);
+			
+			if (APawn* TargetPawn = PS->GetPawn())
+			{
+				if (IAbilitySystemInterface* ASCInterface = Cast<IAbilitySystemInterface>(TargetPawn))
+				{
+					if (UAbilitySystemComponent* TargetASC = ASCInterface->GetAbilitySystemComponent())
+					{
+						float HP = TargetASC->GetNumericAttribute(UPR_BasicAttributeSet::GetHPAttribute());
+						float MaxHP = TargetASC->GetNumericAttribute(UPR_BasicAttributeSet::GetMaxHPAttribute());
+						float Percent = (MaxHP > 0.0f) ? (HP / MaxHP) : 0.0f;
+						
+						HUD_Player->UpdateHPBar_Other(PS->GetPlayerId(), Percent);
+					}
+				}
+			}
+		}
 	}
 }
 

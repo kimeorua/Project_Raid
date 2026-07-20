@@ -114,16 +114,11 @@ void APR_PlayerCharacter::OnRep_PlayerState()
 	
 	InitWeaponConfiguration();
 	
-	APlayerController* LocalPC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
-	if (LocalPC && LocalPC->IsLocalController())
+	if (IsLocallyControlled())
 	{
-		if (APR_PlayerCharacter* LocalChar = Cast<APR_PlayerCharacter>(LocalPC->GetPawn()))
+		if (UPR_UIComponent_Player* LocalUIComp = GetUIComponent())
 		{
-			if (UPR_UIComponent_Player* LocalUIComp = LocalChar->GetUIComponent())
-			{
-				LocalUIComp->InitComponent();
-				LocalUIComp->OtherPlayersUI_Create(LocalPC);
-			}
+			LocalUIComp->InitComponent();
 		}
 	}
 }

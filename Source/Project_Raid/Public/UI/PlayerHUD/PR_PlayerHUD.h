@@ -18,6 +18,7 @@ public:
 	void UpdateHPBar_Owner(float NewPercent) const;
 	void UpdateHPBar_Other(int32 ID, float NewPercent);
 	void CreateOtherPlayerBar(APlayerState* PS);
+	void ClearOtherPlayerBars();
 	
 protected:
 	virtual void NativeConstruct() override;

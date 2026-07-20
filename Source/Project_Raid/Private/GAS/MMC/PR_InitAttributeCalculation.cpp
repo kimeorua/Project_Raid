@@ -33,8 +33,6 @@ float UPR_InitAttributeCalculation::CalculateBaseMagnitude_Implementation(const 
 	
 	float HPRate = Spec.GetSetByCallerMagnitude(RateTag, false, 1.0f);
 	
-	LogHelper::LogPrint("Rate: ", HPRate);
-	
 	MaxHP = HPRate * 100;
 	
 	return MaxHP;

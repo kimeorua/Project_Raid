@@ -30,6 +30,8 @@ void UPR_PlayerHUD::CreateOtherPlayerBar(APlayerState* PS)
 	
 	int32 TargetID = PS->GetPlayerId();
 	
+	if (TargetID == 0) { return; }
+	
 	if (PartySlotMap.Contains(TargetID)) { return; }
 
 	APlayerController* PC = GetOwningPlayer();
@@ -40,6 +42,15 @@ void UPR_PlayerHUD::CreateOtherPlayerBar(APlayerState* PS)
 		OtherPlayerBox->AddChild(OthersBar);
 		PartySlotMap.Add(TargetID, OthersBar);
 	}
+}
+
+void UPR_PlayerHUD::ClearOtherPlayerBars()
+{
+	if (OtherPlayerBox)
+	{
+		OtherPlayerBox->ClearChildren();
+	}
+	PartySlotMap.Empty();
 }
 
 void UPR_PlayerHUD::NativeConstruct()
