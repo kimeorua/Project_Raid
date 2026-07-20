@@ -77,6 +77,26 @@ void APR_PlayerCharacter::PossessedBy(AController* NewController)
 	InitWeaponConfiguration();
 }
 
+void APR_PlayerCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	
+	if (APR_PlayerState* TargetPlayerState = GetPlayerState<APR_PlayerState>())
+	{
+		PR_ASC->InitAbilityActorInfo(TargetPlayerState, this);
+	}
+	
+	InitWeaponConfiguration();
+	
+	if (IsLocallyControlled() || (GetNetMode() == NM_Client && GetController() == nullptr))
+	{
+		if (UPR_UIComponent_Player* LocalUIComp = GetUIComponent())
+		{
+			LocalUIComp->InitComponent();
+		}
+	}
+}
+
 void APR_PlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -101,26 +121,6 @@ void APR_PlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	PR_InputComp->BindNativeInputAction(InputDataAsset, PR_GameplayTags::PR_Input_Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
 	PR_InputComp->BindNativeInputAction(InputDataAsset, PR_GameplayTags::PR_Input_Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
 	PR_InputComp->BindAbilityInputAction(InputDataAsset, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased);
-}
-
-void APR_PlayerCharacter::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-	
-	if (APR_PlayerState* TargetPlayerState = GetPlayerState<APR_PlayerState>())
-	{
-		PR_ASC->InitAbilityActorInfo(TargetPlayerState, this);
-	}
-	
-	InitWeaponConfiguration();
-	
-	if (IsLocallyControlled())
-	{
-		if (UPR_UIComponent_Player* LocalUIComp = GetUIComponent())
-		{
-			LocalUIComp->InitComponent();
-		}
-	}
 }
 
 void APR_PlayerCharacter::InitWeaponConfiguration()

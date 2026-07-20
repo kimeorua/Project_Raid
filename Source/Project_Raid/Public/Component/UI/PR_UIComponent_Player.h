@@ -7,6 +7,8 @@
 #include "PR_UIComponent_Player.generated.h"
 
 class UPR_PlayerHUD;
+class APR_GameState_BattleState;
+class APlayerState;
 
 UCLASS()
 class PROJECT_RAID_API UPR_UIComponent_Player : public UPR_UIComponent_Base
@@ -28,8 +30,12 @@ protected:
 	virtual void OnHPChanged(const FOnAttributeChangeData& Data);
 	virtual void OnMaxHPChanged(const FOnAttributeChangeData& Data);
 	
-	void TryInitializeNetworkMultiplayerUI();
-	
 	UFUNCTION()
 	void HandlePartyHPChanged(int32 TargetID, float NewPercent);
+	
+private:
+	bool IsNetworkUIReady(APR_GameState_BattleState* GS, APlayerState* MyPlayerState);
+	void BindPartyDelegates(APR_GameState_BattleState* GS);
+	void InitializeRemotePlayersUI(APR_GameState_BattleState* GS, APlayerState* MyPlayerState);
+	void TryInitializeNetworkMultiplayerUI();
 };

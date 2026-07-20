@@ -13,7 +13,7 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-class APR_GameState_BattelState;
+class APR_GameState_BattleState;
 
 UCLASS()
 class PROJECT_RAID_API UPR_BasicAttributeSet : public UAttributeSet
@@ -58,7 +58,7 @@ public:
 	
 private:
 	UPROPERTY()
-	TObjectPtr<APR_GameState_BattelState> PR_GS;
+	TObjectPtr<APR_GameState_BattleState> PR_GS;
 	
 private:
 	void BroadcastPartyHPChanged();

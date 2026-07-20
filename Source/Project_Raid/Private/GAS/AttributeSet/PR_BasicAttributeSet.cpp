@@ -7,7 +7,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
-#include "GameState/PR_GameState_BattelState.h"
+#include "GameState/PR_GameState_BattleState.h"
 
 UPR_BasicAttributeSet::UPR_BasicAttributeSet()
 {
@@ -78,7 +78,7 @@ void UPR_BasicAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffe
 	
 	if (!PR_GS)
 	{
-		PR_GS = GetWorld()->GetGameState<APR_GameState_BattelState>();
+		PR_GS = GetWorld()->GetGameState<APR_GameState_BattleState>();
 	}
 
 	if (Data.EvaluatedData.Attribute == GetHPAttribute())
@@ -101,7 +101,7 @@ void UPR_BasicAttributeSet::BroadcastPartyHPChanged()
 	{
 		if (UWorld* World = GetWorld())
 		{
-			PR_GS = World->GetGameState<APR_GameState_BattelState>();
+			PR_GS = World->GetGameState<APR_GameState_BattleState>();
 		}
 	}
 	
