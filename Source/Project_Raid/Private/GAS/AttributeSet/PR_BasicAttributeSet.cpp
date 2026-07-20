@@ -8,7 +8,6 @@
 #include "Net/UnrealNetwork.h"
 
 #include "GameState/PR_GameState_BattelState.h"
-#include "Utils/LogHelper.h"
 
 UPR_BasicAttributeSet::UPR_BasicAttributeSet()
 {
@@ -28,12 +27,24 @@ void UPR_BasicAttributeSet::OnRep_MaxHP(const FGameplayAttributeData& OldVale)
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, MaxHP, OldVale);
 }
 
+void UPR_BasicAttributeSet::OnRep_SP(const FGameplayAttributeData& OldVale)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, SP, OldVale);
+}
+
+void UPR_BasicAttributeSet::OnRep_MaxSP(const FGameplayAttributeData& OldVale)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, MaxSP, OldVale);
+}
+
 void UPR_BasicAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, HP, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, MaxHP, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, SP, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, MaxSP, COND_None, REPNOTIFY_Always);
 }
 
 void UPR_BasicAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -47,6 +58,14 @@ void UPR_BasicAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribu
 	if (Attribute == GetHPAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHP());
+	}
+	if (Attribute == GetSPAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxSP());
+	}
+	if (Attribute == GetMaxSPAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 1.0f);
 	}
 }
 

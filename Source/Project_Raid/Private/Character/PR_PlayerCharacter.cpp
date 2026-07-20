@@ -69,12 +69,12 @@ void APR_PlayerCharacter::PossessedBy(AController* NewController)
 		PR_ASC->InitAbilityActorInfo(TargetPlayerState, this);
 	}
 	
-	InitWeaponConfiguration();
-	
 	if (UIComponent)
 	{
 		UIComponent->InitComponent();
 	}
+	
+	InitWeaponConfiguration();
 }
 
 void APR_PlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -141,7 +141,6 @@ void APR_PlayerCharacter::InitWeaponConfiguration()
 	
 	PlayerColorSettings(Type);
 	PlayerWeaponAndAbilityInitialization(Type);
-	PlayerWeaponAnimLayerSetting(Type);
 }
 
 void APR_PlayerCharacter::InputMove(const FInputActionValue& InputActionValue)
@@ -192,6 +191,31 @@ void APR_PlayerCharacter::Input_AbilityInputTagReleased(FGameplayTag InInputTag)
 	PR_ASC->OnAbilityInputReleased(InInputTag);
 }
 
+void APR_PlayerCharacter::SettingInitAttributes(const UPR_WeaponDataAsset* InitData)
+{
+	if (!HasAuthority() || !PR_ASC || !InitData) { return; }
+	if (!InitData->GetInitAttributeConfig().IsValid()) { return; }
+	FPR_InitAttributeConfig InitGEConfig = InitData->GetInitAttributeConfig();
+
+	FGameplayEffectContextHandle EffectContext_Max = PR_ASC->MakeEffectContext();
+	EffectContext_Max.AddInstigator(this, this);
+	
+	FGameplayEffectSpecHandle SpecHandle_Max = PR_ASC->MakeOutgoingSpec(InitGEConfig.InitMaxGameplayEffect, 1.0f, EffectContext_Max);
+    
+	if (SpecHandle_Max.IsValid())
+	{
+		SpecHandle_Max.Data.Get()->SetSetByCallerMagnitude(PR_GameplayTags::PR_Data_Rate_HP, InitGEConfig.Rate_HP);
+		
+		PR_ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_Max.Data.Get());
+	}
+	
+	FGameplayEffectContextHandle EffectContext_Current = PR_ASC->MakeEffectContext();
+	EffectContext_Current.AddInstigator(this, this);
+	
+	FGameplayEffectSpecHandle SpecHandle_Current = PR_ASC->MakeOutgoingSpec(InitGEConfig.InitCurrentGameplayEffect, 1.0f, EffectContext_Current);
+	PR_ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_Current.Data.Get());
+}
+
 void APR_PlayerCharacter::PlayerColorInitialization(FLinearColor NewColor)
 {
 	if (!GetMesh()) return;
@@ -232,14 +256,14 @@ void APR_PlayerCharacter::PlayerColorSettings(EWeaponType InType)
 
 void APR_PlayerCharacter::PlayerWeaponAndAbilityInitialization(EWeaponType InType)
 {
+	UPR_AbilityInitSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UPR_AbilityInitSubsystem>();
+	if (!DataSubsystem) { return; }
+		
+	const UPR_WeaponDataAsset* InitData = DataSubsystem->GetWeaponInitData(InType);
+	if (!InitData) { return; }
+	
 	if (HasAuthority() && PR_ASC)
 	{
-		UPR_AbilityInitSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UPR_AbilityInitSubsystem>();
-		if (!DataSubsystem) { return; }
-		
-		const UPR_WeaponDataAsset* InitData = DataSubsystem->GetWeaponInitData(InType);
-		if (!InitData) { return; }
-		
 		PlayerWeaponInitialization(InitData->GetWeapons());
 		
 		for (const FPR_InputAbilityConfig& Config : InitData->GetInputWeaponAbilities())
@@ -264,6 +288,9 @@ void APR_PlayerCharacter::PlayerWeaponAndAbilityInitialization(EWeaponType InTyp
 			}
 		}
 	}
+	
+	PlayerWeaponAnimLayerSetting(InitData);
+	SettingInitAttributes(InitData);
 }
 
 void APR_PlayerCharacter::PlayerWeaponInitialization(const TArray<TSubclassOf<APR_Weapon_Base>>& InWeapons)
@@ -282,15 +309,9 @@ void APR_PlayerCharacter::PlayerWeaponInitialization(const TArray<TSubclassOf<AP
 	}
 }
 
-void APR_PlayerCharacter::PlayerWeaponAnimLayerSetting(EWeaponType InType)
+void APR_PlayerCharacter::PlayerWeaponAnimLayerSetting(const UPR_WeaponDataAsset* InitData)
 {
 	if (!GetMesh()) { return; }
-	
-	UPR_AbilityInitSubsystem* DataSubsystem = GetGameInstance()->GetSubsystem<UPR_AbilityInitSubsystem>();
-	if (!DataSubsystem) { return; }
-		
-	const UPR_WeaponDataAsset* InitData = DataSubsystem->GetWeaponInitData(InType);
-	if (!InitData ||!InitData->GetWeaponAnim()) { return; }
 	
 	GetMesh()->LinkAnimClassLayers(InitData->GetWeaponAnim());
 }

@@ -32,10 +32,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Animation", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UAnimInstance> WeaponAnimBlueprintClass;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AttributeSet", meta = (AllowPrivateAccess = true))
+	FPR_InitAttributeConfig InitAttributeConfig;
+	
 public:
 	FORCEINLINE EWeaponType GetWeaponType() const { return Type; }
 	FORCEINLINE const TArray<FPR_InputAbilityConfig>& GetInputWeaponAbilities() const { return InputWeaponAbilities; }
 	FORCEINLINE const TArray<TSubclassOf<UGameplayAbility>>& GetNonInputWeaponAbilities() const { return NonInputWeaponAbilities; }
 	FORCEINLINE const TArray<TSubclassOf<APR_Weapon_Base>>& GetWeapons() const { return Weapons; }
 	FORCEINLINE  TSubclassOf<UAnimInstance> GetWeaponAnim() const { return WeaponAnimBlueprintClass;}
+	FORCEINLINE FPR_InitAttributeConfig GetInitAttributeConfig() const { return InitAttributeConfig; }
 };

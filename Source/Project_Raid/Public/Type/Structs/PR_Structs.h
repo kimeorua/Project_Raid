@@ -8,6 +8,7 @@
 #include "PR_Structs.generated.h"
 
 class UInputAction;
+class UGameplayEffect;
 
 USTRUCT(BlueprintType)
 struct  FPR_InputAbilityConfig
@@ -40,5 +41,25 @@ struct FPR_InputActionConfig
 	bool IsValid() const
 	{
 		return InputTag.IsValid() && (InputAction != nullptr);
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FPR_InitAttributeConfig
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AttributeSet")
+	TSubclassOf<UGameplayEffect> InitMaxGameplayEffect = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AttributeSet")
+	TSubclassOf<UGameplayEffect> InitCurrentGameplayEffect = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AttributeSet")
+	float Rate_HP = 1.0f;
+
+	bool IsValid() const
+	{
+		return Rate_HP > 0.0f && (InitMaxGameplayEffect != nullptr) && (InitCurrentGameplayEffect != nullptr);
 	}
 };

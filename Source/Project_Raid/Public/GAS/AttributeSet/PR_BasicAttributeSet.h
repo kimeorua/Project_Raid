@@ -31,11 +31,25 @@ public:
 	FGameplayAttributeData MaxHP;
 	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, MaxHP);
 	
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute", ReplicatedUsing=OnRep_SP)
+	FGameplayAttributeData SP;
+	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, SP);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute", ReplicatedUsing=OnRep_MaxSP)
+	FGameplayAttributeData MaxSP;
+	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, MaxSP);
+	
 	UFUNCTION()
 	void OnRep_HP(const FGameplayAttributeData& OldVale);
 	
 	UFUNCTION()
 	void OnRep_MaxHP(const FGameplayAttributeData& OldVale);
+	
+	UFUNCTION()
+	void OnRep_SP(const FGameplayAttributeData& OldVale);
+	
+	UFUNCTION()
+	void OnRep_MaxSP(const FGameplayAttributeData& OldVale);
 	
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	

@@ -15,6 +15,8 @@ class APR_Weapon_Base;
 class UInputMappingContext;
 class UPR_InputDataAsset;
 class UPR_UIComponent_Player;
+class UPR_WeaponDataAsset;
+class UInputComponent;
 
 UCLASS()
 class PROJECT_RAID_API APR_PlayerCharacter : public APR_BaseCharacter
@@ -27,7 +29,7 @@ public:
 	virtual void OnRep_PlayerState() override;
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
@@ -48,7 +50,7 @@ private:
 	void PlayerColorSettings(EWeaponType InType);
 	void PlayerWeaponAndAbilityInitialization(EWeaponType InType);
 	void PlayerWeaponInitialization(const TArray<TSubclassOf<APR_Weapon_Base>>& InWeapons);
-	void PlayerWeaponAnimLayerSetting(EWeaponType InType);
+	void PlayerWeaponAnimLayerSetting(const UPR_WeaponDataAsset* InitData);
 	
 public:
 	void InitWeaponConfiguration();
@@ -77,4 +79,8 @@ private:
 	
 public:
 	FORCEINLINE UPR_UIComponent_Player* GetUIComponent() const { return UIComponent; };
+	
+	//---------------------Attribute--------------------//
+private:
+	void SettingInitAttributes(const UPR_WeaponDataAsset* InitData);
 };
