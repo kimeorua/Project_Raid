@@ -65,4 +65,6 @@ public:
 	void ResetCreateButton();
 	
 	void UpdateSessionListView(const TArray<FOnlineSessionSearchResult>& SearchResults);
+	
+	void ResetAllButtons();
 };

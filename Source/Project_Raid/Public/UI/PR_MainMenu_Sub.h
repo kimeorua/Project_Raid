@@ -42,4 +42,7 @@ private:
 protected:
 	virtual void NativeConstruct() override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+	
+public:
+	void ResetButtons();
 };

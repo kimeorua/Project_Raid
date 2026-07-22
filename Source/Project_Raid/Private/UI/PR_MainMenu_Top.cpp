@@ -29,6 +29,12 @@ UPR_LobbyMenu_Sub* UPR_MainMenu_Top::GetLobbySubWidget() const
 	return Cast<UPR_LobbyMenu_Sub>(MenuStack->GetActiveWidget());
 }
 
+UPR_MainMenu_Sub* UPR_MainMenu_Top::GetMainMenuSubWidget() const
+{
+	if (!MenuStack) return nullptr;
+	return Cast<UPR_MainMenu_Sub>(MenuStack->GetActiveWidget());
+}
+
 void UPR_MainMenu_Top::NativeConstruct()
 {
 	Super::NativeConstruct();

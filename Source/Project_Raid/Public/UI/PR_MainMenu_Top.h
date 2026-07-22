@@ -19,6 +19,7 @@ public:
 	void PopUpLobbyUI() const;
 	void PushOptionWidget(TSubclassOf<UCommonActivatableWidget> OptionUIClass);
 	UPR_LobbyMenu_Sub* GetLobbySubWidget() const;
+	UPR_MainMenu_Sub* GetMainMenuSubWidget() const;
 private:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonActivatableWidgetStack> MenuStack;

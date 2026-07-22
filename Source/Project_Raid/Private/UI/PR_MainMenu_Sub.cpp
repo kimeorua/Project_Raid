@@ -12,6 +12,10 @@
 void UPR_MainMenu_Sub::LoginButtonClicked() const
 {
 	if (!GameInstance) { return;}
+	LoginButton->SetIsEnabled(false);
+	ExitButton->SetIsEnabled(false);
+	OptionButton->SetIsEnabled(false);
+	
 	GameInstance->Login();
 }
 
@@ -44,4 +48,11 @@ void UPR_MainMenu_Sub::NativeConstruct()
 UWidget* UPR_MainMenu_Sub::NativeGetDesiredFocusTarget() const
 {
 	return IsValid(LoginButton) ? LoginButton : Super::NativeGetDesiredFocusTarget();
+}
+
+void UPR_MainMenu_Sub::ResetButtons()
+{
+	LoginButton->SetIsEnabled(true);
+	ExitButton->SetIsEnabled(true);
+	OptionButton->SetIsEnabled(true);
 }

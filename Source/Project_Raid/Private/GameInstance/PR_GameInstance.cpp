@@ -12,8 +12,7 @@
 #include "UI/PR_LobbyMenu_Sub.h"
 #include "UI/PR_MainMenu_Top.h"
 #include "PlayerController/PR_MainMenuController.h"
-
-#include "Utils/LogHelper.h"
+#include "UI/PR_MainMenu_Sub.h"
 
 void UPR_GameInstance::Login()
 {
@@ -190,11 +189,16 @@ void UPR_GameInstance::LoginComleted(int NumOfPlayer, bool bSuccessful, const FU
 	{
 		if (APR_MainMenuController* PR_PC = Cast<APR_MainMenuController>(UGameplayStatics::GetPlayerController(GetWorld(), NumOfPlayer)))
 		{
+			PR_PC->GetMasterUI()->GetMainMenuSubWidget()->ResetButtons();
 			PR_PC->ShowLobbyUI();
 		}
 	}
 	else
 	{
+		if (APR_MainMenuController* PR_PC = Cast<APR_MainMenuController>(UGameplayStatics::GetPlayerController(GetWorld(), NumOfPlayer)))
+		{
+			PR_PC->GetMasterUI()->GetMainMenuSubWidget()->ResetButtons();
+		}
 		UE_LOG(LogTemp, Warning, TEXT("Login failed %s"), *Error);
 	}
 }
@@ -210,6 +214,7 @@ void UPR_GameInstance::OnFindSessionsCompleted(bool bWasSuccessful)
 				if (bWasSuccessful && SessionSearchSettings.IsValid())
 				{
 					LobbySub->UpdateSessionListView(SessionSearchSettings->SearchResults);
+					LobbySub->ResetAllButtons();
 				}
 			}
 		}

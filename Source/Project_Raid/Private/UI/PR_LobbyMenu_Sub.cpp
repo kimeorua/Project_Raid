@@ -43,6 +43,12 @@ void UPR_LobbyMenu_Sub::OptionButtonClicked() const
 void UPR_LobbyMenu_Sub::RefreshButtonClicked() const
 {
 	if (LobbyListView) { LobbyListView->ClearListItems(); }
+	
+	CreateSessionButton->SetIsEnabled(false);
+	OptionButton->SetIsEnabled(false);
+	ExitButton->SetIsEnabled(false);
+	RefreshButton->SetIsEnabled(false);
+	
 	GameInstance->FindSessions();
 }
 
@@ -89,4 +95,12 @@ void UPR_LobbyMenu_Sub::UpdateSessionListView(const TArray<FOnlineSessionSearchR
 		NewRow->SearchResult = Result;
 		LobbyListView->AddItem(NewRow);
 	}
+}
+
+void UPR_LobbyMenu_Sub::ResetAllButtons()
+{
+	CreateSessionButton->SetIsEnabled(true);
+	OptionButton->SetIsEnabled(true);
+	ExitButton->SetIsEnabled(true);
+	RefreshButton->SetIsEnabled(true);
 }
