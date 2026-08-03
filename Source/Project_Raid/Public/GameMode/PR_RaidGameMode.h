@@ -16,4 +16,9 @@ class PROJECT_RAID_API APR_RaidGameMode : public AGameMode
 public:
 	APR_RaidGameMode();
 	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
+	AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	
+private:
+	UPROPERTY()
+	int32 CurrentPlayerCount = 1;
 };
