@@ -11,6 +11,7 @@ class UPR_GameInstance;
 class UCommonActivatableWidgetStack;
 class UCommonListView;
 class FOnlineSessionSettings;
+class UPR_CreateSessionPopUp;
 
 UCLASS()
 class PROJECT_RAID_API UPR_LobbyMenu_Sub : public UCommonActivatableWidget
@@ -45,7 +46,7 @@ private:
 	TSubclassOf<UCommonActivatableWidget> CreateSessionPopUpWidgetClass;
 	
 	UFUNCTION()
-	void CreateSessionButtonClicked() const;
+	void CreateSessionButtonClicked();
 	
 	UFUNCTION()
 	void ExitButtonClicked() const;
@@ -54,7 +55,7 @@ private:
 	void OptionButtonClicked() const;
 	
 	UFUNCTION()
-	void RefreshButtonClicked() const;
+	void RefreshButtonClicked();
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -67,4 +68,8 @@ public:
 	void UpdateSessionListView(const TArray<FOnlineSessionSearchResult>& SearchResults);
 	
 	void ResetAllButtons();
+	
+	void ButtonsDisable();
+	
+	UPR_CreateSessionPopUp* GetPopUp() const;
 };

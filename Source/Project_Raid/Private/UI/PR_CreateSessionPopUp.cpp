@@ -5,9 +5,18 @@
 #include "CommonButtonBase.h"
 #include "Components/EditableTextBox.h"
 #include "GameInstance/PR_GameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "PlayerController/PR_MainMenuController.h"
+#include "UI/PR_LobbyMenu_Sub.h"
+#include "UI/PR_MainMenu_Top.h"
 
 void UPR_CreateSessionPopUp::OnCancelButtonClicked()
 {
+	if (OnCanelButtonCliked.IsBound())
+	{
+		OnCanelButtonCliked.Broadcast();
+	}
+	
 	DeactivateWidget();
 }
 
@@ -15,10 +24,11 @@ void UPR_CreateSessionPopUp::OnCreateSessionButtonClicked()
 {
 	if (UPR_GameInstance* GI = GetGameInstance<UPR_GameInstance>())
 	{
+		CreateButton->SetIsEnabled(false);
+		CancelButton->SetIsEnabled(false);
+		
 		FString RoomName = SessionNameTextBox->GetText().ToString().TrimStartAndEnd();
 		GI->CreateSession(RoomName);
-		
-		DeactivateWidget();
 	}
 }
 
@@ -38,6 +48,4 @@ UWidget* UPR_CreateSessionPopUp::NativeGetDesiredFocusTarget() const
 void UPR_CreateSessionPopUp::NativeOnDeactivated()
 {
 	Super::NativeOnDeactivated();
-	
-	OnCanelButtonCliked.Broadcast();
 }

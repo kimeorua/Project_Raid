@@ -12,16 +12,16 @@
 #include "UI/PR_CreateSessionPopUp.h"
 #include "ListRow/PR_SessionDataRow.h"
 
-void UPR_LobbyMenu_Sub::CreateSessionButtonClicked() const
+void UPR_LobbyMenu_Sub::CreateSessionButtonClicked()
 {
 	if (!CreateSessionPopUpWidgetClass || !PopUpStack) { return; }
 	
 	if (UPR_CreateSessionPopUp* PopUp = Cast<UPR_CreateSessionPopUp>(PopUpStack->AddWidget(CreateSessionPopUpWidgetClass)))
 	{
-		PopUp->OnCanelButtonCliked.RemoveDynamic(this, &UPR_LobbyMenu_Sub::ResetCreateButton);
+		PopUp->OnCanelButtonCliked.RemoveAll(this);
 		PopUp->OnCanelButtonCliked.AddDynamic(this, &UPR_LobbyMenu_Sub::ResetCreateButton);
 	}
-	CreateSessionButton->SetIsEnabled(false);
+	ButtonsDisable();
 }
 
 void UPR_LobbyMenu_Sub::ExitButtonClicked() const
@@ -40,16 +40,27 @@ void UPR_LobbyMenu_Sub::OptionButtonClicked() const
 	}
 }
 
-void UPR_LobbyMenu_Sub::RefreshButtonClicked() const
+void UPR_LobbyMenu_Sub::RefreshButtonClicked()
 {
 	if (LobbyListView) { LobbyListView->ClearListItems(); }
 	
+	ButtonsDisable();
+	
+	GameInstance->FindSessions();
+}
+
+void UPR_LobbyMenu_Sub::ButtonsDisable()
+{
 	CreateSessionButton->SetIsEnabled(false);
 	OptionButton->SetIsEnabled(false);
 	ExitButton->SetIsEnabled(false);
 	RefreshButton->SetIsEnabled(false);
-	
-	GameInstance->FindSessions();
+}
+
+UPR_CreateSessionPopUp* UPR_LobbyMenu_Sub::GetPopUp() const
+{
+	if (!PopUpStack) return nullptr;
+	return Cast<UPR_CreateSessionPopUp>(PopUpStack->GetActiveWidget());
 }
 
 void UPR_LobbyMenu_Sub::NativeConstruct()
@@ -72,7 +83,7 @@ UWidget* UPR_LobbyMenu_Sub::NativeGetDesiredFocusTarget() const
 void UPR_LobbyMenu_Sub::ResetCreateButton()
 {
 	if (!CreateSessionButton) { return; }
-	CreateSessionButton->SetIsEnabled(true);
+	ResetAllButtons();
 	CreateSessionButton->SetFocus();
 }
 

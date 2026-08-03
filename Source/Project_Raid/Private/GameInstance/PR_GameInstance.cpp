@@ -12,6 +12,7 @@
 #include "UI/PR_LobbyMenu_Sub.h"
 #include "UI/PR_MainMenu_Top.h"
 #include "PlayerController/PR_MainMenuController.h"
+#include "UI/PR_CreateSessionPopUp.h"
 #include "UI/PR_MainMenu_Sub.h"
 
 void UPR_GameInstance::Login()
@@ -137,6 +138,7 @@ void UPR_GameInstance::OnCreateSessionCompleted(FName SessionName, bool bWasSucc
 			{
 				if (UPR_LobbyMenu_Sub* LobbySub = MasterUI->GetLobbySubWidget())
 				{
+					LobbySub->GetPopUp()->DeactivateWidget();
 					LobbySub->ResetCreateButton();
 				}
 			}
