@@ -7,6 +7,8 @@
 #include "PR_RaidGameMode.generated.h"
 
 class APR_Dummy;
+class APR_Chest;
+class ATargetPoint;
 
 UCLASS()
 class PROJECT_RAID_API APR_RaidGameMode : public AGameMode
@@ -30,8 +32,16 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning", meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<APR_Dummy> DummyClass;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<APR_Chest> ChestClass;
+	
 	UPROPERTY()
 	TArray<TObjectPtr<APR_Dummy>> SpawnedDummies;
 	
-	void SpawnDummiesForConnectedPlayers();
+	UPROPERTY()
+	TArray<TObjectPtr<APR_Chest>> SpawnedChests;
+	
+	void SpawnActorLogics();
+	void SpawnDummyLogic(UWorld* InWorld, TArray<ATargetPoint*> InSpawnPoints);
+	void SpawnChestLogic(UWorld* InWorld, APR_Dummy* InDummy);
 };

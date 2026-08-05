@@ -5,10 +5,12 @@
 
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
-
-#include "Actor/PR_Dummy.h"
 #include "Engine/TargetPoint.h"
+
 #include "Utils/LogHelper.h"
+#include "Actor/PR_Chest.h"
+#include "Actor/PR_Dummy.h"
+
 
 APR_RaidGameMode::APR_RaidGameMode()
 {
@@ -23,7 +25,7 @@ void APR_RaidGameMode::PreLogin(const FString& Options, const FString& Address, 
 	return;
 }
 
-void APR_RaidGameMode::SpawnDummiesForConnectedPlayers()
+void APR_RaidGameMode::SpawnActorLogics()
 {
 	if (!DummyClass) { return; }
 
@@ -41,13 +43,18 @@ void APR_RaidGameMode::SpawnDummiesForConnectedPlayers()
 		}
 	}
 	
+	SpawnDummyLogic(World, SpawnPoints);
+}
+
+void APR_RaidGameMode::SpawnDummyLogic(UWorld* InWorld, TArray<ATargetPoint*> InSpawnPoints)
+{
 	const int32 PlayerCount = GameState->PlayerArray.Num();
 	
 	for (int32 i = 0; i < PlayerCount; ++i)
 	{
 		FName TargetTag = FName(*FString::Printf(TEXT("SpawnPoint_%d"), i + 1)); 
 		
-		ATargetPoint** FoundPointPtr = SpawnPoints.FindByPredicate([TargetTag](const ATargetPoint* Point)
+		ATargetPoint** FoundPointPtr = InSpawnPoints.FindByPredicate([TargetTag](const ATargetPoint* Point)
 		{
 		   return Point && Point->ActorHasTag(TargetTag);
 		});
@@ -65,24 +72,35 @@ void APR_RaidGameMode::SpawnDummiesForConnectedPlayers()
 			FCollisionQueryParams TraceParams;
 			TraceParams.AddIgnoredActor(TargetSpawnPoint);
 
-			if (World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, TraceParams))
+			if (InWorld->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, TraceParams))
 			{
 				SpawnLocation.Z = HitResult.ImpactPoint.Z - 145.f;
 				SpawnTransform.SetLocation(SpawnLocation);
-			}
-			else
-			{
-				DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 5.0f, 0, 2.0f);
 			}
 
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
    
-			if (APR_Dummy* NewDummy = World->SpawnActor<APR_Dummy>(DummyClass, SpawnTransform, SpawnParams))
+			if (APR_Dummy* NewDummy = InWorld->SpawnActor<APR_Dummy>(DummyClass, SpawnTransform, SpawnParams))
 			{
 				SpawnedDummies.Add(NewDummy);
+				
+				SpawnChestLogic(InWorld, NewDummy);
 			}
 		}
+	}
+}
+
+void APR_RaidGameMode::SpawnChestLogic(UWorld* InWorld, APR_Dummy* InDummy)
+{
+	if (!InDummy) { return; }
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	if (APR_Chest* NewChest = InWorld->SpawnActor<APR_Chest>(ChestClass,InDummy->GetChestTransform(),SpawnParams))
+	{
+		SpawnedChests.Add(NewChest);
 	}
 }
 
@@ -113,6 +131,6 @@ void APR_RaidGameMode::BeginPlay()
 	
 	if (HasAuthority())
 	{
-		GetWorldTimerManager().SetTimerForNextTick(this, &APR_RaidGameMode::SpawnDummiesForConnectedPlayers);
+		GetWorldTimerManager().SetTimerForNextTick(this, &APR_RaidGameMode::SpawnActorLogics);
 	}
 }

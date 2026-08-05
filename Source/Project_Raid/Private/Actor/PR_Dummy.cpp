@@ -15,6 +15,15 @@ APR_Dummy::APR_Dummy()
 	DummyCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("DummyCollision"));
 	SetRootComponent(DummyCollision);
 	DummyMesh->SetupAttachment(GetRootComponent());
+	
+	ChestOffset = CreateDefaultSubobject<USceneComponent>(TEXT("ChestOffset"));
+	ChestOffset->SetupAttachment(GetRootComponent());
+}
+
+FTransform APR_Dummy::GetChestTransform()
+{
+	if (!ChestOffset) { return FTransform::Identity; }
+	return ChestOffset->GetComponentTransform();
 }
 
 void APR_Dummy::BeginPlay()
