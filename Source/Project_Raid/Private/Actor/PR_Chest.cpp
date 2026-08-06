@@ -6,8 +6,6 @@
 
 APR_Chest::APR_Chest()
 {
-	bReplicates = true;
-	
 	ChestBottom = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ChestBottom"));
  	ChestTop = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Chest_Top"));
 	SetRootComponent(ChestBottom);

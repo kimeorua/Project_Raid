@@ -13,6 +13,11 @@ namespace PR_GameplayTags
 	//------------------------------Data------------------------------//
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PR_Data_Rate_HP);
 	
+	//------------------------------PlayerIndex------------------------------//
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Index_1);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Index_2);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Index_3);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Index_4);
 	
 	//------------------------------Test------------------------------//
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PR_Test);

@@ -9,8 +9,6 @@
 
 APR_Dummy::APR_Dummy()
 {
-	bReplicates = true;
-	
 	DummyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DummyMesh"));
 	DummyCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("DummyCollision"));
 	SetRootComponent(DummyCollision);

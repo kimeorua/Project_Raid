@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actor/PR_InteractableActor_Base.h"
 #include "PR_Dummy.generated.h"
 
 class UStaticMeshComponent;
@@ -11,7 +11,7 @@ class UCapsuleComponent;
 class USceneComponent;
 
 UCLASS()
-class PROJECT_RAID_API APR_Dummy : public AActor
+class PROJECT_RAID_API APR_Dummy : public APR_InteractableActor_Base
 {
 	GENERATED_BODY()
 	

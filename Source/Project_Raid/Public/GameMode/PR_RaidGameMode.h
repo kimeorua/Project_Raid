@@ -18,6 +18,7 @@ public:
 	APR_RaidGameMode();
 	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	virtual void RestartPlayerAtPlayerStart(AController* NewPlayer, AActor* StartSpot) override;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -25,6 +26,9 @@ protected:
 private:
 	UPROPERTY()
 	int32 CurrentPlayerCount = 1;
+	
+	UPROPERTY()
+	int32 CurrentPlayerIndex = 1;
 	
 	UPROPERTY()
 	int32 DummyCount = 1;
@@ -43,5 +47,5 @@ private:
 	
 	void SpawnActorLogics();
 	void SpawnDummyLogic(UWorld* InWorld, TArray<ATargetPoint*> InSpawnPoints);
-	void SpawnChestLogic(UWorld* InWorld, APR_Dummy* InDummy);
+	void SpawnChestLogic(UWorld* InWorld, APR_Dummy* InDummy, int32 Index);
 };

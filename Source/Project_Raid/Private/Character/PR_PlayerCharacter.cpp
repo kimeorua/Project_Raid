@@ -11,6 +11,7 @@
 #include "GAS/ASC/PR_AbilitySystemComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Component/Input/PR_EnhancedInputComponent.h"
+#include "Net/UnrealNetwork.h"
 
 #include "PlayerState/PR_PlayerState.h"
 #include "Subsystem/PR_AbilityInitSubsystem.h"
@@ -309,4 +310,11 @@ void APR_PlayerCharacter::PlayerWeaponAnimLayerSetting(const UPR_WeaponDataAsset
 	if (!GetMesh()) { return; }
 	
 	GetMesh()->LinkAnimClassLayers(InitData->GetWeaponAnim());
+}
+
+void APR_PlayerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(APR_PlayerCharacter, PlayerIndexTag);
 }

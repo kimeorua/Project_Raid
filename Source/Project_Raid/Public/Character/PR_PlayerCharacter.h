@@ -83,4 +83,16 @@ public:
 	//---------------------Attribute--------------------//
 private:
 	void SettingInitAttributes(const UPR_WeaponDataAsset* InitData);
+	
+	//---------------------Tag--------------------//
+private:
+	UPROPERTY(Replicated)
+	FGameplayTag PlayerIndexTag;
+	
+public:
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE FGameplayTag GetPlayerIndexTag() const { return PlayerIndexTag; }
+	void SetPlayerIndexTag(const FGameplayTag& InTag) { PlayerIndexTag = InTag; }
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

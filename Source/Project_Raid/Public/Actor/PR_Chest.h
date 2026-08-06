@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actor/PR_InteractableActor_Base.h"
 #include "PR_Chest.generated.h"
 
 class UStaticMeshComponent;
 
 UCLASS()
-class PROJECT_RAID_API APR_Chest : public AActor
+class PROJECT_RAID_API APR_Chest : public APR_InteractableActor_Base
 {
 	GENERATED_BODY()
 	

@@ -10,12 +10,14 @@
 #include "Utils/LogHelper.h"
 #include "Actor/PR_Chest.h"
 #include "Actor/PR_Dummy.h"
+#include "Character/PR_PlayerCharacter.h"
 
 
 APR_RaidGameMode::APR_RaidGameMode()
 {
 	CurrentPlayerCount = 1;
 	DummyCount = 1;
+	CurrentPlayerIndex = 1;
 }
 
 void APR_RaidGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -85,13 +87,16 @@ void APR_RaidGameMode::SpawnDummyLogic(UWorld* InWorld, TArray<ATargetPoint*> In
 			{
 				SpawnedDummies.Add(NewDummy);
 				
-				SpawnChestLogic(InWorld, NewDummy);
+				FString TagName = FString::Printf(TEXT("Player.Index.%d"), i + 1);
+				FGameplayTag IndexTag = FGameplayTag::RequestGameplayTag(FName(*TagName));
+				NewDummy->SetRequiredPlayerTag(IndexTag);
+				SpawnChestLogic(InWorld, NewDummy, i + 1);
 			}
 		}
 	}
 }
 
-void APR_RaidGameMode::SpawnChestLogic(UWorld* InWorld, APR_Dummy* InDummy)
+void APR_RaidGameMode::SpawnChestLogic(UWorld* InWorld, APR_Dummy* InDummy, int32 Index)
 {
 	if (!InDummy) { return; }
 	
@@ -100,6 +105,9 @@ void APR_RaidGameMode::SpawnChestLogic(UWorld* InWorld, APR_Dummy* InDummy)
 	
 	if (APR_Chest* NewChest = InWorld->SpawnActor<APR_Chest>(ChestClass,InDummy->GetChestTransform(),SpawnParams))
 	{
+		FString TagName = FString::Printf(TEXT("Player.Index.%d"), Index);
+		FGameplayTag IndexTag = FGameplayTag::RequestGameplayTag(FName(*TagName));
+		NewChest->SetRequiredPlayerTag(IndexTag);
 		SpawnedChests.Add(NewChest);
 	}
 }
@@ -123,6 +131,26 @@ AActor* APR_RaidGameMode::ChoosePlayerStart_Implementation(AController* Player)
 	CurrentPlayerCount++;
 
 	return FoundStart ? FoundStart : Super::ChoosePlayerStart_Implementation(Player);
+}
+
+void APR_RaidGameMode::RestartPlayerAtPlayerStart(AController* NewPlayer, AActor* StartSpot)
+{
+	Super::RestartPlayerAtPlayerStart(NewPlayer, StartSpot);
+	
+	APlayerController* PC = Cast<APlayerController>(NewPlayer);
+	if (!PC) return;
+
+	if (APR_PlayerCharacter* TargetChar = Cast<APR_PlayerCharacter>(PC->GetPawn()))
+	{
+		if (TargetChar->GetPlayerIndexTag().IsValid()) {return;}
+
+		FString TagName = FString::Printf(TEXT("Player.Index.%d"), CurrentPlayerIndex);
+		FGameplayTag SlotTag = FGameplayTag::RequestGameplayTag(FName(*TagName));
+
+		TargetChar->SetPlayerIndexTag(SlotTag);
+		
+		CurrentPlayerIndex++;
+	}
 }
 
 void APR_RaidGameMode::BeginPlay()
