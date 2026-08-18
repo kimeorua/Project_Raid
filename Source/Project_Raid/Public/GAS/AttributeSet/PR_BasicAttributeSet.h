@@ -39,6 +39,27 @@ public:
 	FGameplayAttributeData MaxSP;
 	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, MaxSP);
 	
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute", ReplicatedUsing=OnRep_G_SP)
+	FGameplayAttributeData G_SP;
+	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, G_SP);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute", ReplicatedUsing=OnRep_E_SP)
+	FGameplayAttributeData E_SP;
+	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, E_SP);
+
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute", ReplicatedUsing=OnRep_GDR)
+	FGameplayAttributeData GDR;
+	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, GDR);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute", ReplicatedUsing=OnRep_ATK)
+	FGameplayAttributeData ATK;
+	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, ATK);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute", ReplicatedUsing=OnRep_PotionCount)
+	FGameplayAttributeData PotionCount;
+	
+	ATTRIBUTE_ACCESSORS_BASIC(UPR_BasicAttributeSet, PotionCount);
 	UFUNCTION()
 	void OnRep_HP(const FGameplayAttributeData& OldVale);
 	
@@ -50,6 +71,21 @@ public:
 	
 	UFUNCTION()
 	void OnRep_MaxSP(const FGameplayAttributeData& OldVale);
+	
+	UFUNCTION()
+	void OnRep_G_SP(const FGameplayAttributeData& OldVale);
+	
+	UFUNCTION()
+	void OnRep_E_SP(const FGameplayAttributeData& OldVale);
+
+	UFUNCTION()
+	void OnRep_GDR(const FGameplayAttributeData& OldVale);
+
+	UFUNCTION()
+	void OnRep_ATK(const FGameplayAttributeData& OldVale);
+
+	UFUNCTION()
+	void OnRep_PotionCount(const FGameplayAttributeData& OldVale);
 	
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	

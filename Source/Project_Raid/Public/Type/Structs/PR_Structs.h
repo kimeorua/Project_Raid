@@ -54,12 +54,15 @@ struct FPR_InitAttributeConfig
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AttributeSet")
 	TSubclassOf<UGameplayEffect> InitCurrentGameplayEffect = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AttributeSet")
+	TSubclassOf<UGameplayEffect> CombatGameplayEffect = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AttributeSet")
 	float Rate_HP = 1.0f;
 
 	bool IsValid() const
 	{
-		return Rate_HP > 0.0f && (InitMaxGameplayEffect != nullptr) && (InitCurrentGameplayEffect != nullptr);
+		return Rate_HP > 0.0f && (InitMaxGameplayEffect != nullptr) && (InitCurrentGameplayEffect != nullptr) && (CombatGameplayEffect != nullptr);
 	}
 };

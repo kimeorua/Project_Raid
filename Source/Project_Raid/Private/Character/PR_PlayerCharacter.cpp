@@ -191,8 +191,10 @@ void APR_PlayerCharacter::SettingInitAttributes(const UPR_WeaponDataAsset* InitD
 {
 	if (!HasAuthority() || !PR_ASC || !InitData) { return; }
 	if (!InitData->GetInitAttributeConfig().IsValid()) { return; }
+	
+	//------------------무기별 HP, SP 적용(최대 값)-------------------//
+	
 	FPR_InitAttributeConfig InitGEConfig = InitData->GetInitAttributeConfig();
-
 	FGameplayEffectContextHandle EffectContext_Max = PR_ASC->MakeEffectContext();
 	EffectContext_Max.AddInstigator(this, this);
 	
@@ -205,11 +207,21 @@ void APR_PlayerCharacter::SettingInitAttributes(const UPR_WeaponDataAsset* InitD
 		PR_ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_Max.Data.Get());
 	}
 	
+	//------------------무기별 HP, SP 적용(현재 값)-------------------//
+	
 	FGameplayEffectContextHandle EffectContext_Current = PR_ASC->MakeEffectContext();
 	EffectContext_Current.AddInstigator(this, this);
 	
 	FGameplayEffectSpecHandle SpecHandle_Current = PR_ASC->MakeOutgoingSpec(InitGEConfig.InitCurrentGameplayEffect, 1.0f, EffectContext_Current);
 	PR_ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_Current.Data.Get());
+	
+	//------------------무기별 전투 스탯 적용-------------------//
+	
+	FGameplayEffectContextHandle EffectContext_Combat = PR_ASC->MakeEffectContext();
+	EffectContext_Combat.AddInstigator(this, this);
+	
+	FGameplayEffectSpecHandle SpecHandle_Combat = PR_ASC->MakeOutgoingSpec(InitGEConfig.CombatGameplayEffect, 1.0f, EffectContext_Combat);
+	PR_ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_Combat.Data.Get());
 }
 
 void APR_PlayerCharacter::PlayerColorInitialization(FLinearColor NewColor)

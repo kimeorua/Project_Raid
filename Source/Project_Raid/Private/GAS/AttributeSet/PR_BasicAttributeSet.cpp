@@ -37,6 +37,31 @@ void UPR_BasicAttributeSet::OnRep_MaxSP(const FGameplayAttributeData& OldVale)
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, MaxSP, OldVale);
 }
 
+void UPR_BasicAttributeSet::OnRep_G_SP(const FGameplayAttributeData& OldVale)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, G_SP, OldVale);
+}
+
+void UPR_BasicAttributeSet::OnRep_E_SP(const FGameplayAttributeData& OldVale)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, E_SP, OldVale);
+}
+
+void UPR_BasicAttributeSet::OnRep_GDR(const FGameplayAttributeData& OldVale)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, GDR, OldVale);
+}
+
+void UPR_BasicAttributeSet::OnRep_ATK(const FGameplayAttributeData& OldVale)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, ATK, OldVale);
+}
+
+void UPR_BasicAttributeSet::OnRep_PotionCount(const FGameplayAttributeData& OldVale)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UPR_BasicAttributeSet, PotionCount, OldVale);
+}
+
 void UPR_BasicAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -45,6 +70,11 @@ void UPR_BasicAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimePro
 	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, MaxHP, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, SP, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, MaxSP, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, G_SP, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, E_SP, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, GDR, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, ATK, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPR_BasicAttributeSet, PotionCount, COND_None, REPNOTIFY_Always);
 }
 
 void UPR_BasicAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
