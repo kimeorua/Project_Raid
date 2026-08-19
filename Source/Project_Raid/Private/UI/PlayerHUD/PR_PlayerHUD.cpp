@@ -2,9 +2,13 @@
 
 
 #include "UI/PlayerHUD/PR_PlayerHUD.h"
+
+#include "Components/Overlay.h"
 #include "Components/VerticalBox.h"
 
 #include "UI/PlayerHUD/PR_ProgressBar.h"
+#include "UI/PlayerHUD/PR_WeaponCombatUI.h"
+
 #include "Utils/LogHelper.h"
 
 void UPR_PlayerHUD::UpdateHPBar_Owner(float NewPercent) const
@@ -12,6 +16,13 @@ void UPR_PlayerHUD::UpdateHPBar_Owner(float NewPercent) const
 	if (!Player_HP_Bar) { return; }
 	
 	Player_HP_Bar->SetPercent(NewPercent);
+}
+
+void UPR_PlayerHUD::UpdateSPBar_Owner(float NewPercent) const
+{
+	if (!Player_SP_Bar) { return; }
+	
+	Player_SP_Bar->SetPercent(NewPercent);
 }
 
 void UPR_PlayerHUD::UpdateHPBar_Other(int32 ID, float NewPercent)
@@ -51,6 +62,15 @@ void UPR_PlayerHUD::ClearOtherPlayerBars()
 		OtherPlayerBox->ClearChildren();
 	}
 	PartySlotMap.Empty();
+}
+
+void UPR_PlayerHUD::AddCombatUI(UPR_WeaponCombatUI* InUI)
+{
+	WeaponCombatUI_Sloat->ClearChildren();
+	if (InUI)
+	{
+		WeaponCombatUI_Sloat->AddChild(InUI);
+	}
 }
 
 void UPR_PlayerHUD::NativeConstruct()

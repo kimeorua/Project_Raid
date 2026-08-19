@@ -9,6 +9,7 @@
 class UPR_PlayerHUD;
 class APR_GameState_BattleState;
 class APlayerState;
+class UPR_WeaponCombatUI;
 
 UCLASS()
 class PROJECT_RAID_API UPR_UIComponent_Player : public UPR_UIComponent_Base
@@ -18,6 +19,7 @@ public:
 	UPR_UIComponent_Player();
 	virtual void BeginPlay() override;
 	virtual void InitComponent() override;
+	void CreateCombatUI(TSubclassOf<UPR_WeaponCombatUI> InWeaponCombatUI);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
@@ -29,6 +31,13 @@ protected:
 	//---------------HP 변동---------------------------//
 	virtual void OnHPChanged(const FOnAttributeChangeData& Data);
 	virtual void OnMaxHPChanged(const FOnAttributeChangeData& Data);
+	
+	//---------------SP 변동---------------------------//
+	virtual void OnSPChanged(const FOnAttributeChangeData& Data);
+	virtual void OnMaxSPChanged(const FOnAttributeChangeData& Data);
+	
+	FDelegateHandle SPChangedDelegateHandle;
+	FDelegateHandle MaxSPChangedDelegateHandle;
 	
 	UFUNCTION()
 	void HandlePartyHPChanged(int32 TargetID, float NewPercent);

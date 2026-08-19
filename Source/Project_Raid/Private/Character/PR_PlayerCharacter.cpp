@@ -87,8 +87,6 @@ void APR_PlayerCharacter::OnRep_PlayerState()
 		PR_ASC->InitAbilityActorInfo(TargetPlayerState, this);
 	}
 	
-	InitWeaponConfiguration();
-	
 	if (IsLocallyControlled() || (GetNetMode() == NM_Client && GetController() == nullptr))
 	{
 		if (UPR_UIComponent_Player* LocalUIComp = GetUIComponent())
@@ -96,6 +94,8 @@ void APR_PlayerCharacter::OnRep_PlayerState()
 			LocalUIComp->InitComponent();
 		}
 	}
+	
+	InitWeaponConfiguration();
 }
 
 void APR_PlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -299,6 +299,11 @@ void APR_PlayerCharacter::PlayerWeaponAndAbilityInitialization(EWeaponType InTyp
 	
 	PlayerWeaponAnimLayerSetting(InitData);
 	SettingInitAttributes(InitData);
+	
+	if (IsLocallyControlled() && UIComponent)
+	{
+		UIComponent->CreateCombatUI(InitData->GetWeaponCombatUIClass());
+	}
 }
 
 void APR_PlayerCharacter::PlayerWeaponInitialization(const TArray<TSubclassOf<APR_Weapon_Base>>& InWeapons)

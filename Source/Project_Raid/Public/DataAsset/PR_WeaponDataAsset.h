@@ -11,6 +11,7 @@
 class UGameplayAbility;
 class APR_Weapon_Base;
 class UPR_WeaponLinkedAnimLayer;
+class UPR_WeaponCombatUI;
 
 UCLASS()
 class PROJECT_RAID_API UPR_WeaponDataAsset : public UPrimaryDataAsset
@@ -35,6 +36,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AttributeSet", meta = (AllowPrivateAccess = true))
 	FPR_InitAttributeConfig InitAttributeConfig;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponUI", meta = (AllowPrivateAccess = true))
+	TSubclassOf<UPR_WeaponCombatUI> WeaponCombatUIClass;
+	
 public:
 	FORCEINLINE EWeaponType GetWeaponType() const { return Type; }
 	FORCEINLINE const TArray<FPR_InputAbilityConfig>& GetInputWeaponAbilities() const { return InputWeaponAbilities; }
@@ -42,4 +46,5 @@ public:
 	FORCEINLINE const TArray<TSubclassOf<APR_Weapon_Base>>& GetWeapons() const { return Weapons; }
 	FORCEINLINE  TSubclassOf<UAnimInstance> GetWeaponAnim() const { return WeaponAnimBlueprintClass;}
 	FORCEINLINE FPR_InitAttributeConfig GetInitAttributeConfig() const { return InitAttributeConfig; }
+	FORCEINLINE TSubclassOf<UPR_WeaponCombatUI> GetWeaponCombatUIClass() const { return WeaponCombatUIClass; }
 };
