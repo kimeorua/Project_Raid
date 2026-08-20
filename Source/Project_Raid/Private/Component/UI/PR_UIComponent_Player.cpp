@@ -61,10 +61,10 @@ void UPR_UIComponent_Player::InitComponent()
 		HUD_Player->UpdateHPBar_Owner(CurrentHealth / CurrentMaxHealth);
 		
 		SPChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate
-		(UPR_BasicAttributeSet::GetHPAttribute()).AddUObject(this, &UPR_UIComponent_Player::OnSPChanged);
+		(UPR_BasicAttributeSet::GetSPAttribute()).AddUObject(this, &UPR_UIComponent_Player::OnSPChanged);
 		
 		MaxSPChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate
-		(UPR_BasicAttributeSet::GetMaxHPAttribute()).AddUObject(this, &UPR_UIComponent_Player::OnMaxSPChanged);
+		(UPR_BasicAttributeSet::GetMaxSPAttribute()).AddUObject(this, &UPR_UIComponent_Player::OnMaxSPChanged);
 
 		float CurrentStamina = ASC->GetNumericAttribute(UPR_BasicAttributeSet::GetSPAttribute());
 		float CurrentMaxStamina = ASC->GetNumericAttribute(UPR_BasicAttributeSet::GetMaxSPAttribute());
