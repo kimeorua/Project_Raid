@@ -7,6 +7,8 @@ namespace PR_GameplayTags
 {
 	UE_DEFINE_GAMEPLAY_TAG(PR_Input_Move, "PR.Input.Move");
 	UE_DEFINE_GAMEPLAY_TAG(PR_Input_Look, "PR.Input.Look");
+	UE_DEFINE_GAMEPLAY_TAG(PR_Input_Attack_Light, "PR.Input.Attack.Light");
+	UE_DEFINE_GAMEPLAY_TAG(PR_Input_Attack_Heavy, "PR.Input.Attack.Heavy");
 	
 	UE_DEFINE_GAMEPLAY_TAG(PR_Data_Rate_HP, "PR.Data.Rate.HP");
 	

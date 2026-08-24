@@ -9,6 +9,8 @@ namespace PR_GameplayTags
 	//------------------------------Input------------------------------//
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PR_Input_Move);
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PR_Input_Look);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PR_Input_Attack_Light);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PR_Input_Attack_Heavy);
 	
 	//------------------------------Data------------------------------//
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PR_Data_Rate_HP);
