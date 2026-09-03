@@ -15,20 +15,35 @@ const UPR_ComboAttackDataAsset* UPR_ComboAttackDeveloperSetting::GetWeaponDataAs
 	const UPR_ComboAttackDeveloperSetting* Settings = GetDefault<UPR_ComboAttackDeveloperSetting>();
 	if (!Settings) { return nullptr; }
 	
-	if (Settings->CachedWeaponDataMap.Contains(InWeaponType))
-	{
-		return Settings->CachedWeaponDataMap[InWeaponType];
-	}
+	if (const TObjectPtr<UPR_ComboAttackDataAsset>* FoundAsset = Settings->CachedWeaponDataMap.Find(InWeaponType)) {return *FoundAsset; }
 	
 	if (const TSoftObjectPtr<UPR_ComboAttackDataAsset>* SoftPtr = Settings->WeaponDataMap.Find(InWeaponType))
 	{
-		UPR_ComboAttackDataAsset* LoadedAsset = SoftPtr->LoadSynchronous();
-		if (LoadedAsset)
+		if (UPR_ComboAttackDataAsset* LoadedAsset = SoftPtr->LoadSynchronous())
 		{
 			const_cast<UPR_ComboAttackDeveloperSetting*>(Settings)->CachedWeaponDataMap.Add(InWeaponType, LoadedAsset);
 			return LoadedAsset;
 		}
 	}
-
 	return nullptr;
+}
+
+void UPR_ComboAttackDeveloperSetting::PreloadAllWeaponData()
+{
+	const UPR_ComboAttackDeveloperSetting* Settings = GetDefault<UPR_ComboAttackDeveloperSetting>();
+	if (!Settings) { return; }
+
+	for (const auto& Data : Settings->WeaponDataMap)
+	{
+		EWeaponType WeaponType = Data.Key;
+		const TSoftObjectPtr<UPR_ComboAttackDataAsset>& SoftPtr = Data.Value;
+
+		if (!Settings->CachedWeaponDataMap.Contains(WeaponType) && !SoftPtr.IsNull())
+		{
+			if (UPR_ComboAttackDataAsset* LoadedAsset = SoftPtr.LoadSynchronous())
+			{
+				const_cast<UPR_ComboAttackDeveloperSetting*>(Settings)->CachedWeaponDataMap.Add(WeaponType, LoadedAsset);
+			}
+		}
+	}
 }

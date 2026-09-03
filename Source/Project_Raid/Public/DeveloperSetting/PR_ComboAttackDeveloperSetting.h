@@ -19,6 +19,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Combat|ComboAttack Developer Settings")
 	static const UPR_ComboAttackDataAsset* GetWeaponDataAsset(EWeaponType InWeaponType);
 	
+	static void PreloadAllWeaponData();
+	
 protected:
 	UPROPERTY(EditAnywhere, Config, Category = "Weapon Registry")
 	TMap<EWeaponType, TSoftObjectPtr<UPR_ComboAttackDataAsset>> WeaponDataMap;

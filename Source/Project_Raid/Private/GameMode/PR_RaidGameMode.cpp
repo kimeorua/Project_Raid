@@ -11,6 +11,7 @@
 #include "Actor/PR_Chest.h"
 #include "Actor/PR_Dummy.h"
 #include "Character/PR_PlayerCharacter.h"
+#include "DeveloperSetting/PR_ComboAttackDeveloperSetting.h"
 
 
 APR_RaidGameMode::APR_RaidGameMode()
@@ -161,4 +162,11 @@ void APR_RaidGameMode::BeginPlay()
 	{
 		GetWorldTimerManager().SetTimerForNextTick(this, &APR_RaidGameMode::SpawnActorLogics);
 	}
+}
+
+void APR_RaidGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+	
+	UPR_ComboAttackDeveloperSetting::PreloadAllWeaponData();
 }
