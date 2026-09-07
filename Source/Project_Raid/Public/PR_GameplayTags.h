@@ -21,6 +21,15 @@ namespace PR_GameplayTags
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Index_3);
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Index_4);
 	
+	//------------------------------PlayerState------------------------------//
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerState_Combat_ComboWindow);
+	
+	//------------------------------PlayerCombo------------------------------//
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerCombo_Light_1);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerCombo_Light_2);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerCombo_Light_3);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerCombo_Light_4);
+	
 	//------------------------------Test------------------------------//
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PR_Test);
 }

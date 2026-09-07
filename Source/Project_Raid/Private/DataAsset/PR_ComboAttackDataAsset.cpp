@@ -7,7 +7,7 @@ const FPR_ComboNode* UPR_ComboAttackDataAsset::FindComboNode(const FGameplayTag&
 {
 	for (const FPR_ComboNode& Node : ComboNodes)
 	{
-		if (Node.PreviousComboTag.MatchesTag(InPreviousTag) && Node.InputTag.MatchesTag(InInputTag))
+		if (Node.PreviousComboTag == InPreviousTag && Node.InputTag == InInputTag)
 		{
 			return &Node;
 		}

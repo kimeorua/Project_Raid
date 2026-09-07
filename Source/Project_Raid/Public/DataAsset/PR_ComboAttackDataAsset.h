@@ -14,13 +14,13 @@ struct FPR_ComboNode
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combo", meta = (Categories = "PlayerCombo"))
 	FGameplayTag PreviousComboTag;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combo", meta = (Categories = "PR"))
 	FGameplayTag InputTag;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combo", meta = (Categories = "PlayerCombo"))
 	FGameplayTag NextComboTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combo")

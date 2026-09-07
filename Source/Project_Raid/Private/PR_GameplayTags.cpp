@@ -17,5 +17,12 @@ namespace PR_GameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Index_3, "Player.Index.3");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Index_4, "Player.Index.4");
 	
+	UE_DEFINE_GAMEPLAY_TAG(PlayerState_Combat_ComboWindow, "PlayerState.Combat.ComboWindow");
+	
+	UE_DEFINE_GAMEPLAY_TAG(PlayerCombo_Light_1, "PlayerCombo.Light.1");
+	UE_DEFINE_GAMEPLAY_TAG(PlayerCombo_Light_2, "PlayerCombo.Light.2");
+	UE_DEFINE_GAMEPLAY_TAG(PlayerCombo_Light_3, "PlayerCombo.Light.3");
+	UE_DEFINE_GAMEPLAY_TAG(PlayerCombo_Light_4, "PlayerCombo.Light.4");
+	
 	UE_DEFINE_GAMEPLAY_TAG(PR_Test, "PR.Test");
 }
