@@ -23,6 +23,7 @@ namespace PR_GameplayTags
 	
 	//------------------------------PlayerState------------------------------//
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerState_Combat_ComboWindow);
+	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerState_Combat_ComboWindow_Close);
 	
 	//------------------------------PlayerCombo------------------------------//
 	PROJECT_RAID_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerCombo_Light_1);

@@ -3,6 +3,7 @@
 
 #include "AnimInstance/AnimNotify/PR_ANS_ComboWindow.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "PR_GameplayTags.h"
@@ -20,9 +21,10 @@ void UPR_ANS_ComboWindow::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeq
 	
 	if (!MeshComp) { return; }
 	
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MeshComp->GetOwner()))
+	if (AActor* Owner = MeshComp->GetOwner())
 	{
-		ASC->AddLooseGameplayTag(PR_GameplayTags::PlayerState_Combat_ComboWindow);
+		FGameplayEventData Payload;
+        UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Owner, PR_GameplayTags::PlayerState_Combat_ComboWindow, Payload);
 	}
 }
 
@@ -32,8 +34,9 @@ void UPR_ANS_ComboWindow::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSeque
 	
 	if (!MeshComp) { return; }
 	
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(MeshComp->GetOwner()))
+	if (AActor* Owner = MeshComp->GetOwner())
 	{
-		ASC->RemoveLooseGameplayTag(PR_GameplayTags::PlayerState_Combat_ComboWindow);
+		FGameplayEventData Payload;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Owner, PR_GameplayTags::PlayerState_Combat_ComboWindow_Close, Payload);
 	}
 }

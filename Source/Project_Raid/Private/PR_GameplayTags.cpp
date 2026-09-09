@@ -18,6 +18,7 @@ namespace PR_GameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Index_4, "Player.Index.4");
 	
 	UE_DEFINE_GAMEPLAY_TAG(PlayerState_Combat_ComboWindow, "PlayerState.Combat.ComboWindow");
+	UE_DEFINE_GAMEPLAY_TAG(PlayerState_Combat_ComboWindow_Close, "PlayerState.Combat.ComboWindow.Close");
 	
 	UE_DEFINE_GAMEPLAY_TAG(PlayerCombo_Light_1, "PlayerCombo.Light.1");
 	UE_DEFINE_GAMEPLAY_TAG(PlayerCombo_Light_2, "PlayerCombo.Light.2");
